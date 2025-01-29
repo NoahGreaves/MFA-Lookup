@@ -1,5 +1,7 @@
 'use client'
 
+import SearchButton from "./search-button";
+
 export default function SearchBar() {
 
     const containerColumn = {
@@ -32,20 +34,11 @@ export default function SearchBar() {
         // marginTop: '10%'
     }
 
-    function handleClick() {
-        console.log("Seach Button Clicked   ");
-    }
-
     return (
         <div>
-            {/* <div style={searchBarStyle}>
-                <input style={inputFieldStyle} placeholder="Search..."></input>
-            </div>
-            <button style={buttonStyle} onClick={handleClick}>Search</button>
-         */}
             <div style={containerColumn}>
                 <textarea style={inputFieldStyle} id="searchField" placeholder="Search..."></textarea>
-                <button style={buttonStyle} onClick={handleClick}>Search</button>
+                <SearchButton />
             </div>
         </div>
     )

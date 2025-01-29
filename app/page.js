@@ -1,4 +1,3 @@
-import LikeButton from "./like-button";
 import SearchBar from "./search-bar";
 import Header from "./header";
 
@@ -12,8 +11,6 @@ export default function HomePage() {
     alignItems: 'center'
   }
 
-  const names = ['Ada Lovelace', 'Grace Hopper', 'Margaret Hamilton'];
-
   return (
     <div>
       <div style={container}>
@@ -22,17 +19,7 @@ export default function HomePage() {
 
       <SearchBar />
 
-      {/* Output list */}
-      {/* <div style={container}>
-        <ul>
-          {/* iterate through an array creating an HTML List element for each index }
-          {names.map((name) => (
-            <li key={name}>{name}</li>
-          ))}
-        </ul>
 
-        <LikeButton />
-      </div> */}
     </div>
   );
 }
