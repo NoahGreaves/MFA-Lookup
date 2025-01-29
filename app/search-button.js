@@ -4,12 +4,11 @@ import { useState } from 'react';
 
 const accounts = ['Noah Greaves', 'Paul Martin', 'Kiley Carson'];
 
-
 export default function SearchButton() {
     const container = {
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     }
 
     const buttonStyle = {

@@ -18,8 +18,6 @@ export default function HomePage() {
       </div>
 
       <SearchBar />
-
-
     </div>
   );
 }
