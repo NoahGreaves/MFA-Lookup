@@ -1,0 +1,22 @@
+{
+    "accounts":[
+       {
+          "name":"Noah Greaves",
+          "mfaMethod":"Biometric",
+          "email":"ngreaves2@atb.com",
+          "phoneNumber":"XXX-XXX-6624"
+       },
+       {
+          "name":"Paul Martin",
+          "mfaMethod":"SMS",
+          "email":"ngreaves2@atb.com",
+          "phoneNumber":"XXX-XXX-6624"
+       },
+       {
+          "name":"Kiley Carson",
+          "mfaMethod":"Okta",
+          "email":"ngreaves2@atb.com",
+          "phoneNumber":"XXX-XXX-6624"
+       }
+    ]
+ }

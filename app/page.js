@@ -28,7 +28,7 @@ export default function HomePage() {
     borderRadius: '4px',
     backgroundColor: '#f8f8f8',
     fontSize: '16px',
-    resize: 'none'
+    resize: 'none',
 }
 
 const buttonStyle = {
@@ -40,7 +40,7 @@ const buttonStyle = {
       <div style={containerColumn}>
         <Header title="ATB Multi-Factor Authentication (MFA) Account Search" />
         <SearchBar style={inputFieldStyle} />
-        <SearchButton style={buttonStyle} />
+        {/* <SearchButton style={buttonStyle} /> */}
       </div>
     </div>
   );
