@@ -3,20 +3,10 @@
 import { useState } from "react";
 import Data from './data/data.json';
 
-
-// const accountData = {
-//     name: 'Noah Greaves',
-//     mfaMethod: 'Bio',
-//     email: 'ngreaves2@atb.com',
-//     phoneNumber: 'XXX-XXX-6624'
-// };
-
-
 const accounts = [];
 
 // if reading JSON from a string use JSON.parse('JSON_STRING')
 for (var i = 0; i < Data.accounts.length; i++) {
-    //  alert(parsedJSON[i].Id);
     accounts[i] = Data.accounts[i];
 }
 
