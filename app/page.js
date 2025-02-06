@@ -1,6 +1,5 @@
 // 'use client'
 
-import { BrowserRouter } from 'react-router-dom';
 
 import SearchBar from "./Componenets/search-bar";
 import SearchButton from "./Componenets/search-button";
@@ -9,41 +8,15 @@ import Header from "./Componenets/header";
 import ProfileClient from "./Componenets/ProfileClient";
 import ProfileServer from "./Componenets/ProfileServer";
 
-
+import AuthenticationButton from './Componenets/AuthenticationButton';
 // import { useNavigate } from "react-router-dom"; 
 // TO TEST RUN ADMIN CMD PROMT AND USE COMMAND -- npm run dev --
 // STARTS LOCAL SERVER TO TEST REACT APP
 
+import "./css/page.css";
+
 export default function HomePage() {
-  const containerRow = {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
 
-  const containerColumn = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column'
-  }
-
-  const inputFieldStyle = {
-    // width: '50%',
-    // height: '75px',
-    padding: '12px 20px',
-    boxSizing: 'border-box',
-    border: '2px solid #ccc',
-    borderRadius: '4px',
-    backgroundColor: '#f8f8f8',
-    fontSize: '16px',
-    resize: 'none',
-  }
-
-  const buttonStyle = {
-    margin: '5%'
-  }
 
   // useEffect(() => {
   //   const allWithClass = Array.from(
@@ -63,23 +36,25 @@ export default function HomePage() {
 
   return (
     <div>
-      <div style={containerColumn}>
+      <div className="containerColumn">
         <Header title="ATB Multi-Factor Authentication (MFA) Account Search" />
         {/* Login / Logout Buttons */}
-        <div style={containerRow}>
+        <div className="containerRow">
           {/* <button className="auth-button" onClick={login}></button> */}
 
-          <div className="auth-button" style={buttonStyle}>
-            <a href="/api/auth/login">Login</a>
-          </div>
+          {/* <AuthenticationButton></AuthenticationButton> */}
 
-          <div className="auth-button" style={buttonStyle}>
+          {/* <div className="auth-button" style={buttonStyle}> */}
+            <a href="/api/auth/login">Login</a>
+          {/* </div> */}
+
+          {/* <div className="auth-button" style={buttonStyle}> */}
             <a href="/api/auth/logout">Logout</a>
-          </div>
+          {/* </div> */}
         </div>
         <ProfileClient></ProfileClient>
         {/* <ProfileServer></ProfileServer> */}
-        <SearchBar style={inputFieldStyle} />
+        <SearchBar className="inputFieldStyle" />
       </div>
     </div>
   );
