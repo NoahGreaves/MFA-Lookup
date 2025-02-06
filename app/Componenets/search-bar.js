@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from "react";
-import Data from './data/data.json';
+// import Data from './data/data.json';
+import Data from '../data/data.json';
 
 const accounts = [];
 

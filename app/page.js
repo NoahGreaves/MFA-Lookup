@@ -2,12 +2,12 @@
 
 import { BrowserRouter } from 'react-router-dom';
 
-import SearchBar from "./search-bar";
-import SearchButton from "./search-button";
-import Header from "./header";
+import SearchBar from "./Componenets/search-bar";
+import SearchButton from "./Componenets/search-button";
+import Header from "./Componenets/header";
 
-import ProfileClient from "./ProfileClient";
-import ProfileServer from "./ProfileServer";
+import ProfileClient from "./Componenets/ProfileClient";
+import ProfileServer from "./Componenets/ProfileServer";
 
 
 // import { useNavigate } from "react-router-dom"; 
