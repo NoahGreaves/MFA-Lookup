@@ -4,19 +4,19 @@
           "name":"Noah Greaves",
           "mfaMethod":"Biometric",
           "email":"ngreaves2@atb.com",
-          "phoneNumber":"XXX-XXX-6624"
+          "phoneNumber":"403-707-6624"
        },
        {
           "name":"Paul Martin",
           "mfaMethod":"SMS",
-          "email":"ngreaves2@atb.com",
-          "phoneNumber":"XXX-XXX-6624"
+          "email":"pmartin@atb.com",
+          "phoneNumber":"403-688-1536 (random)"
        },
        {
           "name":"Kiley Carson",
           "mfaMethod":"Okta",
-          "email":"ngreaves2@atb.com",
-          "phoneNumber":"XXX-XXX-6624"
+          "email":"kcarson@atb.com",
+          "phoneNumber":"403-678-2255 (random)"
        }
     ]
  }
