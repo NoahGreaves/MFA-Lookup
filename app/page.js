@@ -1,4 +1,4 @@
-'use client'
+// 'use client'
 
 
 import SearchBar from "./Componenets/search-bar";
@@ -14,20 +14,10 @@ import AuthenticationButton from './Componenets/AuthenticationButton';
 // STARTS LOCAL SERVER TO TEST REACT APP
 
 import "./css/page.css";
-import oktaConfig from "./config/oktaConfig.js";
-import { BrowserRouter } from "react-router-dom";
-import { Security, useOktaAuth } from "@okta/okta-react";
-import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
-import { Route, Switch, useHistory } from "react-router-dom";
 
 export default function HomePage() {
 
-  // const oktaAuth = new OktaAuth(oktaConfig);
 
-  // const history = useHistory();
-  //       const restoreOriginalUri = async (_oktaAuth, originalUri) => {
-  //         history.replace(toRelativeUrl(originalUri || "/", window.location.origin));
-  //     };
   // useEffect(() => {
   //   const allWithClass = Array.from(
   //     document.getElementsByClassName('auth-button')
@@ -45,33 +35,27 @@ export default function HomePage() {
   // };
 
   return (
-    // <Security oktaAuth={this.oktaConfig}>
+    <div>
+      <div className="containerColumn">
+        <Header title="ATB Multi-Factor Authentication (MFA) Account Search" />
+        {/* Login / Logout Buttons */}
+        <div className="containerRow">
+          {/* <button className="auth-button" onClick={login}></button> */}
 
-      <BrowserRouter>
-        <div>
-          <div className="containerColumn">
-            <Header title="ATB Multi-Factor Authentication (MFA) Account Search" />
-            {/* Login / Logout Buttons */}
-            <div className="containerRow">
-              {/* <button className="auth-button" onClick={login}></button> */}
+          {/* <AuthenticationButton></AuthenticationButton> */}
 
-              {/* <AuthenticationButton></AuthenticationButton> */}
+          {/* <div className="auth-button" style={buttonStyle}> */}
+            <a href="/api/auth/login">Login</a>
+          {/* </div> */}
 
-              {/* <div className="auth-button" style={buttonStyle}> */}
-              <a href="/api/auth/login">Login</a>
-              {/* </div> */}
-
-              {/* <div className="auth-button" style={buttonStyle}> */}
-              <a href="/api/auth/logout">Logout</a>
-              {/* </div> */}
-            </div>
-            <ProfileClient></ProfileClient>
-            {/* <ProfileServer></ProfileServer> */}
-            <SearchBar className="inputFieldStyle" />
-          </div>
+          {/* <div className="auth-button" style={buttonStyle}> */}
+            <a href="/api/auth/logout">Logout</a>
+          {/* </div> */}
         </div>
-      </BrowserRouter>
-    // </Security>
-
+        <ProfileClient></ProfileClient>
+        {/* <ProfileServer></ProfileServer> */}
+        <SearchBar className="inputFieldStyle" />
+      </div>
+    </div>
   );
 }
