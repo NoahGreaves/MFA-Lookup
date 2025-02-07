@@ -25,14 +25,14 @@ export default function AuthenticationButton() {
 
     if (!authState.isAuthenticated) {
         return (
-            <Security oktaAuth={this.oktaAuth}>
-                <BrowserRouter>
+            // <Security oktaAuth={this.oktaAuth}>
+                // { <BrowserRouter> }
                     <div>
                         <p>Not Logged in yet</p>
                         <button style={buttonStyle} onClick={login}>Login</button>
                     </div>
-                </BrowserRouter>
-            </Security>
+                //</BrowserRouter>
+            // </Security>
         );
     }
 
