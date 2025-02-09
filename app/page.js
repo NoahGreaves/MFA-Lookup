@@ -5,29 +5,19 @@ import SearchBar from "./Componenets/search-bar";
 import SearchButton from "./Componenets/search-button";
 import Header from "./Componenets/header";
 
-import ProfileClient from "./Componenets/ProfileClient";
-import ProfileServer from "./Componenets/ProfileServer";
+import Profile from "./Componenets/Profile";
 
-import AuthenticationButton from './Componenets/AuthenticationButton';
+import { LoginButton } from './Componenets/loginButton';
+import { LogoutButton } from "./Componenets/logoutButton";
 // import { useNavigate } from "react-router-dom"; 
 // TO TEST RUN ADMIN CMD PROMT AND USE COMMAND -- npm run dev --
 // STARTS LOCAL SERVER TO TEST REACT APP
 
+import { Auth0Provider } from '@auth0/auth0-react';
+
 import "./css/page.css";
-import oktaAuthConfig from "./config/oktaConfig.js";
-import { BrowserRouter } from "react-router-dom";
-import { Security, useOktaAuth } from "@okta/okta-react";
-import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
-import { Route, Switch, useHistory } from "react-router-dom";
 
 export default function HomePage() {
-
-  const oktaConfig = new OktaAuth(oktaAuthConfig);
-
-  // const history = useHistory();
-  //       const restoreOriginalUri = async (_oktaAuth, originalUri) => {
-  //         history.replace(toRelativeUrl(originalUri || "/", window.location.origin));
-  //     };
 
   // useEffect(() => {
   //   const allWithClass = Array.from(
@@ -46,32 +36,27 @@ export default function HomePage() {
   // };
 
   return (
-    <Security oktaAuth={oktaConfig}>
-      <BrowserRouter>
-        <div>
-          <div className="containerColumn">
-            <Header title="ATB Multi-Factor Authentication (MFA) Account Search" />
+    <div>
+      <Auth0Provider
+        domain="dev-lj2fgkappxmqsrge.us.auth0.com"
+        clientId="JiaFtfAPdFW3rArItaQfWNFTxRo2LDxx"
+        authorizationParams={{
+          redirect_uri: window.location.origin
+        }}
+      >
+        <div className="containerColumn">
+          <Header title="ATB Multi-Factor Authentication (MFA) Account Search" />
+          <div className="containerRow">
             {/* Login / Logout Buttons */}
-            <div className="containerRow">
-              {/* <button className="auth-button" onClick={login}></button> */}
-
-              {/* <AuthenticationButton></AuthenticationButton> */}
-
-              {/* <div className="auth-button" style={buttonStyle}> */}
-              <a href="/api/auth/login">Login</a>
-              {/* </div> */}
-
-              {/* <div className="auth-button" style={buttonStyle}> */}
-              <a href="/api/auth/logout">Logout</a>
-              {/* </div> */}
-            </div>
-            <ProfileClient></ProfileClient>
-            {/* <ProfileServer></ProfileServer> */}
-            <SearchBar className="inputFieldStyle" />
+              <LoginButton styleClass="auth-button"></LoginButton>
+              <LogoutButton styleClass="auth-button"></LogoutButton>
           </div>
-        </div>
-      </BrowserRouter>
-    </Security>
 
+          <Profile></Profile>
+
+          <SearchBar className="inputFieldStyle" />
+        </div>
+      </Auth0Provider>
+    </div>
   );
 }

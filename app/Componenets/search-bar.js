@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-// import Data from './data/data.json';
+import { useAuth0 } from "@auth0/auth0-react";
 import Data from '../data/data.json';
 
 const accounts = [];
@@ -12,12 +12,19 @@ for (var i = 0; i < Data.accounts.length; i++) {
 }
 
 export default function SearchBar({ style }) {
+    const { isLoading, isAuthenticated } = useAuth0();
     const [inputValue, setInputValue] = useState("");
     const MAX_AMOUNT_OF_INPUT = 50;
 
     const listItemStyle = {
         color: 'white'
     }
+
+    if (isLoading)
+        return <div>Loading...</div>
+
+    if (!isAuthenticated)
+        return <div>Please Login</div>
 
     let numOfSearches = 0;
 

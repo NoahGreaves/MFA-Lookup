@@ -1,4 +1,4 @@
-import { UserProvider } from '@auth0/nextjs-auth0/client';
+
 
 export const metadata = {
   title: 'Next.js',
@@ -13,9 +13,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html style={backgroundStyle} lang="en">
-      <UserProvider>
-          <body>{children}</body>
-      </UserProvider>
+      <body>{children}</body>
     </html>
   )
 }
