@@ -29,11 +29,12 @@ export default function SearchBar({ style }) {
     let numOfSearches = 0;
 
     const handleChange = (event) => {
-        let keyword = event.target.value; // GET KEYWORD FROM TEXTBOX 
+        let keyword = event.target.value; // GET KEYWORD INPUT FROM TEXTBOX 
         const accountListContainer = document.getElementById('accountListContainer');
 
         if (keyword.length > MAX_AMOUNT_OF_INPUT) {
             console.log("Max Input Size");
+            accountListContainer.innerHTML = "You've Reached The Max Amount of Characters, Please Rephrase Your Search."
             return;
         }
 
