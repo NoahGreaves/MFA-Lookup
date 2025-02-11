@@ -19,22 +19,6 @@ import "./css/page.css";
 
 export default function HomePage() {
 
-  // useEffect(() => {
-  //   const allWithClass = Array.from(
-  //     document.getElementsByClassName('auth-button')
-  //   );
-  //   console.log(allWithClass);
-  // }, []);
-
-  // const login = () => {
-  //   console.log("cliked")
-  //   navigate("/api/auth/login"); {/* navigate to desired page */ }
-  // };
-
-  // const logout = () => {
-  //   navigate("/api/auth/logout");
-  // };
-
   return (
     <div>
       <Auth0Provider
