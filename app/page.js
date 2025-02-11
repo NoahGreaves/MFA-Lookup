@@ -1,17 +1,12 @@
 'use client'
 
-
 import SearchBar from "./Componenets/search-bar";
-import SearchButton from "./Componenets/search-button";
 import Header from "./Componenets/header";
 
 import Profile from "./Componenets/Profile";
 
 import { LoginButton } from './Componenets/loginButton';
 import { LogoutButton } from "./Componenets/logoutButton";
-// import { useNavigate } from "react-router-dom"; 
-// TO TEST RUN ADMIN CMD PROMT AND USE COMMAND -- npm run dev --
-// STARTS LOCAL SERVER TO TEST REACT APP
 
 import { Auth0Provider } from '@auth0/auth0-react';
 
@@ -26,6 +21,7 @@ export default function HomePage() {
         clientId="JiaFtfAPdFW3rArItaQfWNFTxRo2LDxx"
         authorizationParams={{
           redirect_uri: window.location.origin
+          // redirect_uri: 'http://localhost'
         }}
       >
         <div className="containerColumn">
