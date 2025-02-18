@@ -21,7 +21,7 @@ export default function SearchBar({ style }) {
     }
 
     if (isLoading)
-        return <div>Loading...</div>
+        return <div>Loading Search Bar...</div>
 
     if (!isAuthenticated)
         return <div>Please Login</div>
