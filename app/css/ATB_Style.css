@@ -23,8 +23,13 @@ Their buttons are a rounded rectangle; ours are not.
 }
 
 .input:focus {
-    border: 3 px;
-    border: #0072F0;
+    border-width: 3 px;
+    border-color: #0072F0;
+}
+
+.select {
+    border-width: 3 px;
+    border-color: #0072F0;
 }
 
 td {
