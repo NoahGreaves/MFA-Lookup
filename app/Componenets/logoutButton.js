@@ -3,8 +3,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 export const LogoutButton = () => {
   const { isLoading, isAuthenticated, logout } = useAuth0();
-  if(isLoading) 
-    return <div>Loading...</div>
+  
+  if(isLoading && isAuthenticated) 
+    return <div>Loading Logout...</div>
 
   if(isAuthenticated) return (
     <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
