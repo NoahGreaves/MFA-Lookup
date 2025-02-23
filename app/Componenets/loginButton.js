@@ -11,7 +11,6 @@ export const LoginButton = ({ styleClass }) => {
   if (isAuthenticated) {
     const setToken = async () => {
       const token = await getAccessTokenSilently();
-      // console.log(token);
       await sendTokenToBackend(token);
     }
 

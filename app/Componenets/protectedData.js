@@ -41,9 +41,9 @@ export const ProtectedData = () => {
         fetchData();
     }, [isAuthenticated, token]);
 
-    if (!token) return <p>Loading token...</p>;
+    if (!token) return <p>Please Authenticate...</p>;
     if (error) return <p>Error: {error}</p>;
-    if (!data) return <p>Loading data...</p>;
+    if (!data) return;
 
     return (
         <div>

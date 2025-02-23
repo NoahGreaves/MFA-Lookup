@@ -10,7 +10,6 @@ const oktaAuth = new OktaAuth({
         token: {
             storageTypes: ['cookie']
           },
-        // storage: 'cookie',
         autoRenew: true, // Automatically refresh tokens
         expireEarlySeconds: 30, // Refresh token 30s before expiration
     },

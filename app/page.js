@@ -39,7 +39,7 @@ export default function HomePage() {
           <Profile></Profile>
           <ProtectedData></ProtectedData>
 
-          {/* <SearchBar className="inputFieldStyle" /> */}
+          <SearchBar className="inputFieldStyle" />
         </div>
       </Auth0Provider>
     </div>
