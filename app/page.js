@@ -6,6 +6,7 @@ import Header from "./Componenets/header";
 import { ProtectedData } from "./Componenets/protectedData";
 
 import Profile from "./Componenets/Profile";
+import { searchTypeDropDown } from "./Componenets/searchTypeDropDown";
 
 import { LoginButton } from './Componenets/loginButton';
 import { LogoutButton } from "./Componenets/logoutButton";
@@ -36,6 +37,7 @@ export default function HomePage() {
             <LogoutButton styleClass="auth-button"></LogoutButton>
           </div>
 
+          <searchTypeDropDown></searchTypeDropDown>
           <Profile></Profile>
           <ProtectedData></ProtectedData>
 

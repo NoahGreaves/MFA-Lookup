@@ -15,7 +15,7 @@ app.use(
     cors({
         origin: "http://localhost:3001", // Allow frontend
         methods: "GET, POST, PUT, DELETE",
-        allowedHeaders: "Content-Type, Authorization, Access-Control-Allow-Credentials", // Allow Authorization header
+        allowedHeaders: "Content-Type, Authorization, Access-Control-Allow-Credentials",
         credentials: true, // Allow cookies
     })
 );
