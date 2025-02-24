@@ -43,6 +43,8 @@ app.post("/login", (request, response) => {
 
 // Logout - Clears the Cookie
 app.post("/logout", (request, response) => {
+    const token = request.cookies.authToken;
+    console.log("[logout] token: " + token)
     response.clearCookie("authToken");
     response.json({ message: "Logged out" });
 });
@@ -50,6 +52,7 @@ app.post("/logout", (request, response) => {
 // Protected Route - Reads Token from Cookie
 app.get("/time", async (request, response) => {
     const token = request.cookies.authToken;
+    console.log("[time] token: " + token)
     if (!token) {
         return response.status(401).json({ error: "Unauthorized" });
     }
