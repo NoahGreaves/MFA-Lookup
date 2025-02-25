@@ -30,10 +30,7 @@ export const LogoutButton = () => {
     return <div>Loading Logout...</div>
 
   if (isAuthenticated) return (
-    <button onClick={mfaLookupLogout}>
-      {/* <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}> */}
-      Log Out
-    </button>
+    <button onClick={mfaLookupLogout}>Log Out</button>
   );
 
   return (

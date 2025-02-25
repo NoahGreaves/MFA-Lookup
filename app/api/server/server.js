@@ -44,15 +44,13 @@ app.post("/login", (request, response) => {
 // Logout - Clears the Cookie
 app.post("/logout", (request, response) => {
     const token = request.cookies.authToken;
-    console.log("[logout] token: " + token)
     response.clearCookie("authToken");
     response.json({ message: "Logged out" });
 });
 
-// Protected Route - Reads Token from Cookie
+// Protected Routes - Reads Token from Cookie
 app.get("/time", async (request, response) => {
     const token = request.cookies.authToken;
-    console.log("[time] token: " + token)
     if (!token) {
         return response.status(401).json({ error: "Unauthorized" });
     }
@@ -66,10 +64,42 @@ app.get("/time", async (request, response) => {
     //res.json({ time: new Date().toISOString() });
 });
 
-// // Protected API route (requires valid Okta token)
-// app.get("/time", authMiddleware, async (req, res) => {
+app.get("/search", async (request, response) => {
+    console.log("🔥 Received API request!");
+    const token = request.cookies.authToken;
+    
+    if (!token) 
+        return response.status(401).json({ error: "Unauthorized" });
+    
+    try {
+        
+        const filters = request.query;
+        console.log("Received filters:", filters);
 
-// });
+        const query = "SELECT * FROM atb WHERE name ILIKE $1 OR email ILIKE $2";
+        const values = [`%${filters.name || ''}%`, `%${filters.email || ''}%`];
+
+        console.log("📝 Executing Query:", query);
+        console.log("🔢 Query Values:", values);
+
+        const result = await db.query(query, values);
+
+        console.log("✅ Database Query Result:", result); // Debugging database result
+        
+        // if (!result.rows || result.rows.length === 0) {
+        if (!result) {
+            console.warn("⚠️ No result found!");
+            return response.status(404).json({ message: "No results found" });
+        }
+
+        response.json({ server_result: result });
+        
+    } catch (err) {
+        console.error("Error fetching result:", err);
+        response.status(500).json({ error: "Internal server error" });
+    }
+    //res.json({ time: new Date().toISOString() });
+});
 
 // Public route (No auth required)
 app.get("/", (request, response) => {
