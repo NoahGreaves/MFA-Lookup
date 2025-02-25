@@ -37,7 +37,7 @@ export default function HomePage() {
             <LogoutButton styleClass="auth-button"></LogoutButton>
           </div>
 
-          <searchTypeDropDown></searchTypeDropDown>
+          {/* <searchTypeDropDown></searchTypeDropDown> */}
           <Profile></Profile>
           <ProtectedData></ProtectedData>
 
