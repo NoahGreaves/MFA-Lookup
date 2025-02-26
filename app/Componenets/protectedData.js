@@ -7,13 +7,13 @@ export const ProtectedData = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
     const { isAuthenticated } = useAuth0();
-    
+
     useEffect(() => {
-        
+
         const fetchData = async () => {
-            if(!isAuthenticated)
+            if (!isAuthenticated)
                 return;
-            
+
             try {
                 const response = await fetch("http://localhost:3000/time", {
                     method: "GET",
@@ -21,7 +21,7 @@ export const ProtectedData = () => {
                     headers: {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json",
-                        "Access-Control-Allow-Credentials" : true,
+                        "Access-Control-Allow-Credentials": true,
                     },
                 });
 
@@ -31,7 +31,7 @@ export const ProtectedData = () => {
 
                 const data = await response.json();
                 setData(data);
-                console.log("Protected data:", data);
+                console.log("Protected data: ", data);
             } catch (err) {
                 setError("Error Fetching Data: " + err.message);
             }
@@ -41,14 +41,24 @@ export const ProtectedData = () => {
     }, [isAuthenticated, token]);
 
 
+    // Helper function to format dates
+    const formatDate = (dateStr) => {
+        return new Date(dateStr).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
+    };
+
     if (!token) return <p>Please Authenticate...</p>;
     if (error) return <p>Error: {error}</p>;
     if (!data) return;
 
     return (
         <div>
-            <h2>Database Time</h2>
-            <pre>{JSON.stringify(data, null, 2)}</pre>
+            <h2>Date</h2>
+            {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+            <pre>{formatDate(data.server_time.now)}</pre>
 
         </div>
     );

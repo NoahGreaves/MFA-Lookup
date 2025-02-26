@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+// import { SearchTypeDropDown } from "./Componenets/searchTypeDropDown.js";
+import { SearchTypeDropDown } from "./searchTypeDropDown.js";
+
 import { useAuth0 } from "@auth0/auth0-react";
 import useAuthToken from "../hooks/useAuthToken.js";
 import { GetSearch } from "../api/server/getSearch.js";
@@ -23,9 +26,11 @@ export const QueryResult = () => {
 
         console.log("Filters before API call:", filters); // Debug filters
 
-        const data = await GetSearch(filters, token);
-        console.log("API Response: ", data); 
-        setResults(data);
+        await GetSearch(filters, token)
+        .then((result) => {
+            console.log("📦 Fetched Search:", result.server_result) // Debugging log
+            setResults(result.server_result) // Update state with API data
+        });
     };
 
     if (!token) return <p>Please Authenticate...</p>;
@@ -33,8 +38,9 @@ export const QueryResult = () => {
 
     return isAuthenticated && (
         <div style={{ padding: "10px" }}>
-            <h2>Search Users</h2>
-            <input
+            <h2>Search Clients</h2>
+          <SearchTypeDropDown></SearchTypeDropDown>
+          <input
                 type="text"
                 placeholder="Search by name"
                 value={name}
@@ -46,13 +52,14 @@ export const QueryResult = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
+
             <button onClick={handleSearch}>Search</button>
 
             <div>
                 {Array.isArray(results) && results.length > 0 ? (
                     results.map((result) => (
-                        <div key={result.id}>
-                            {result.name} - {result.email}
+                        <div key={result.email}>
+                            {result.name} - {result.email} - {result.mfa}
                         </div>
                     ))
                 ) : (

@@ -2,14 +2,9 @@
 
 import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import Data from '../data/data.json';
 
 const accounts = [];
 
-// if reading JSON from a string use JSON.parse('JSON_STRING')
-for (var i = 0; i < Data.accounts.length; i++) {
-    accounts[i] = Data.accounts[i];
-}
 
 export default function SearchBar({ style }) {
     const { isLoading, isAuthenticated } = useAuth0();

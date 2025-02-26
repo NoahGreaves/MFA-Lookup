@@ -6,7 +6,6 @@ import Header from "./Componenets/header";
 import { ProtectedData } from "./Componenets/protectedData";
 
 import Profile from "./Componenets/Profile";
-import { searchTypeDropDown } from "./Componenets/searchTypeDropDown";
 import { QueryResult } from "./Componenets/queryResult"; 
 
 import { LoginButton } from './Componenets/loginButton';
@@ -25,7 +24,8 @@ export default function HomePage() {
         domain="dev-lj2fgkappxmqsrge.us.auth0.com"
         clientId="JiaFtfAPdFW3rArItaQfWNFTxRo2LDxx"
         authorizationParams={{
-          redirect_uri: "http://localhost:3001", //window.location.origin,
+          redirect_uri: "http://localhost:3001",
+          //redirect_uri: window.location.origin,
           audience: "https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/",
           scope: "read:current_user"
         }}
@@ -38,12 +38,11 @@ export default function HomePage() {
             <LogoutButton styleClass="auth-button"></LogoutButton>
           </div>
 
-          {/* <searchTypeDropDown></searchTypeDropDown> */}
-          {/* <Profile></Profile> */}
           <ProtectedData></ProtectedData>
           <QueryResult></QueryResult>
 
-          <SearchBar className="inputFieldStyle" />
+          {/* <Profile></Profile> */}
+          {/* <SearchBar className="inputFieldStyle" /> */}
         </div>
       </Auth0Provider>
     </div>

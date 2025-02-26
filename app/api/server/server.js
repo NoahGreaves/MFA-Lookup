@@ -84,14 +84,21 @@ app.get("/search", async (request, response) => {
 
         const result = await db.query(query, values);
 
-        console.log("✅ Database Query Result:", result); // Debugging database result
+        // const formattedData = result.map((data) => ({
+        //     // id: user.id,
+        //     name: data.name,
+        //     email: data.email,
+        //     mfa: data.mfa,
+        // }));
+        // console.log("❤️ Formatted Result: ", formattedData);
+
         
-        // if (!result.rows || result.rows.length === 0) {
         if (!result) {
             console.warn("⚠️ No result found!");
             return response.status(404).json({ message: "No results found" });
         }
-
+        
+        console.log("✅ Database Query Result:", result); // Debugging database result
         response.json({ server_result: result });
         
     } catch (err) {
