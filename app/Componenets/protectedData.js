@@ -7,14 +7,13 @@ export const ProtectedData = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
     const { isAuthenticated } = useAuth0();
-
+    
     useEffect(() => {
-
+        
         const fetchData = async () => {
-            console.log(isAuthenticated);
             if(!isAuthenticated)
                 return;
-
+            
             try {
                 const response = await fetch("http://localhost:3000/time", {
                     method: "GET",
@@ -41,14 +40,16 @@ export const ProtectedData = () => {
         fetchData();
     }, [isAuthenticated, token]);
 
+
     if (!token) return <p>Please Authenticate...</p>;
     if (error) return <p>Error: {error}</p>;
     if (!data) return;
 
     return (
         <div>
-            <h2>Protected Data</h2>
+            <h2>Database Time</h2>
             <pre>{JSON.stringify(data, null, 2)}</pre>
+
         </div>
     );
 };
