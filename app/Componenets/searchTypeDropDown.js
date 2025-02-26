@@ -2,21 +2,22 @@ import react, { useState } from 'react';
 
 export const SearchTypeDropDown = () => {
     const [searchType, setSearchType] = useState("Name");
-    const searchParameterTypes = ['Account Number', 'Account Type', 'Name', 'Phone Number', 'Email Address'];
+    const searchParameterTypes = ['Account_Number', 'Account_Type', 'Name', 'Phone_Number', 'Email_Address'];
 
     const handleChange = (event) => {
         setSearchType(event.target.value)
     }
 
     let optionItems = searchParameterTypes.map((type) =>
-        <option key={type}>{type}</option>
+        <option key={type}>{ type.split('_').join(' ') }</option>
     );
 
     return (
         <div>
+            Search by: 
             <select onChange={handleChange}>
-               {optionItems}
+                {optionItems}
             </select>
         </div>
-       )
+    )
 }

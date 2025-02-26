@@ -6,7 +6,7 @@ import Header from "./Componenets/header";
 import { ProtectedData } from "./Componenets/protectedData";
 
 import Profile from "./Componenets/Profile";
-import { QueryResult } from "./Componenets/queryResult"; 
+import { QueryResult } from "./Componenets/queryResult";
 
 import { LoginButton } from './Componenets/loginButton';
 import { LogoutButton } from "./Componenets/logoutButton";
@@ -32,17 +32,13 @@ export default function HomePage() {
       >
         <div className="containerColumn">
           <Header title="ATB Multi-Factor Authentication (MFA) Account Search" />
-          <div className="containerRow">
-            {/* Login / Logout Buttons */}
-            <LoginButton styleClass="auth-button"></LoginButton>
-            <LogoutButton styleClass="auth-button"></LogoutButton>
-          </div>
-
+          
           <ProtectedData></ProtectedData>
-          <QueryResult></QueryResult>
 
-          {/* <Profile></Profile> */}
-          {/* <SearchBar className="inputFieldStyle" /> */}
+          <LoginButton styleClass="auth-button"></LoginButton>
+          <LogoutButton styleClass="auth-button"></LogoutButton>
+
+          <QueryResult></QueryResult>
         </div>
       </Auth0Provider>
     </div>

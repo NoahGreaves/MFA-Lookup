@@ -56,10 +56,7 @@ export const ProtectedData = () => {
 
     return (
         <div>
-            <h2>Date</h2>
-            {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
             <pre>{formatDate(data.server_time.now)}</pre>
-
         </div>
     );
 };
