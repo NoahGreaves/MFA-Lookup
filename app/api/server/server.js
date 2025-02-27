@@ -43,7 +43,7 @@ app.post("/login", (request, response) => {
 
 // Logout - Clears the Cookie
 app.post("/logout", (request, response) => {
-    const token = request.cookies.authToken;
+    //const token = request.cookies.authToken;
     response.clearCookie("authToken");
     response.json({ message: "Logged out" });
 });
@@ -61,14 +61,13 @@ app.get("/time", async (request, response) => {
     } catch (err) {
         response.status(500).json({ error: "Database query failed" });
     }
-    //res.json({ time: new Date().toISOString() });
 });
 
 app.get("/search", async (request, response) => {
     console.log("🔥 Received API request!");
     const token = request.cookies.authToken;
     
-    if (!token) 
+    if (!token) // check token validity
         return response.status(401).json({ error: "Unauthorized" });
     
     try {
@@ -76,36 +75,27 @@ app.get("/search", async (request, response) => {
         const filters = request.query;
         console.log("Received filters:", filters);
 
-        const query = "SELECT * FROM atb WHERE name ILIKE $1 OR email ILIKE $2";
-        const values = [`%${filters.name || ''}%`, `%${filters.email || ''}%`];
+        // Fix query
+        const query = "SELECT * FROM atb WHERE $1 ILIKE $2";
+        const values = [`%${filters.searchMethod}%`, `%${filters.search || ''}%`];
 
         console.log("📝 Executing Query:", query);
         console.log("🔢 Query Values:", values);
 
         const result = await db.query(query, values);
-
-        // const formattedData = result.map((data) => ({
-        //     // id: user.id,
-        //     name: data.name,
-        //     email: data.email,
-        //     mfa: data.mfa,
-        // }));
-        // console.log("❤️ Formatted Result: ", formattedData);
-
         
         if (!result) {
             console.warn("⚠️ No result found!");
             return response.status(404).json({ message: "No results found" });
         }
         
-        console.log("✅ Database Query Result:", result); // Debugging database result
+        console.log("✅ Database Query Result:", result);
         response.json({ server_result: result });
         
     } catch (err) {
         console.error("Error fetching result:", err);
         response.status(500).json({ error: "Internal server error" });
     }
-    //res.json({ time: new Date().toISOString() });
 });
 
 // Public route (No auth required)

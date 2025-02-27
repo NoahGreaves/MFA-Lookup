@@ -12,17 +12,26 @@ export const QueryResult = () => {
     const [error, setError] = useState(null);
     const { isAuthenticated } = useAuth0();
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+    const [dropdownOption, setDropdownOption] = useState("");
+
+    const [search, setSearch] = useState("");
     const [results, setResults] = useState([]);
+    // const [email, setEmail] = useState("");
+
+    const handDropdownChange = (option) => {
+        setDropdownOption(option);
+        console.log("dropdown change: " + dropdownOption);
+    }
 
     const handleSearch = async () => {
         const filters = {
-            name: '',
-            email: '',
+            searchMethod: '',
+            search: '',
         };
-        if (name) filters.name = String(name);
-        if (email) filters.email = String(email);
+
+        if (search) filters.search = String(search);
+        filters.searchMethod = String(dropdownOption);
+        console.log("searchMethod: ", filters.searchMethod) // Debugging log
 
         console.log("Filters before API call:", filters); // Debug filters
 
@@ -32,25 +41,20 @@ export const QueryResult = () => {
             setResults(result.server_result) // Update state with API data
         });
     };
-
+    
     if (!token) return <p>Please Authenticate...</p>;
     if (error) return <p>Error: {error}</p>;
 
     return isAuthenticated && (
         <div style={{ padding: "10px" }}>
             <h2>Search Clients</h2>
-          <SearchTypeDropDown></SearchTypeDropDown>
-          <input
+            <SearchTypeDropDown callback={handDropdownChange}></SearchTypeDropDown>
+           
+           <input
                 type="text"
-                placeholder="Search by name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-            />
-            <input
-                type="email"
-                placeholder="Search by email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder={`Search for ${dropdownOption}`}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
             />
 
             <button onClick={handleSearch}>Search</button>
