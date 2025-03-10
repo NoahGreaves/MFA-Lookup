@@ -4,17 +4,25 @@ export async function sendTokenToBackend(token) {
     try {
 
         // Store token in Okta's Token Manager
-        oktaAuth.tokenManager.add("accessToken", { accessToken: token });
+        oktaAuth.tokenManager.add("accessToken", { accessToken: token })
+
+        const accessToken = await oktaAuth.tokenManager.get("accessToken")
+        console.log(token)
 
         const response = await fetch("http://localhost:3000/login", {
             method: "POST",
             credentials: "include", // Ensures the cookie is saved
             headers: {
-                "Authorization": `Bearer ${token}`,
+                "Authorization": `Bearer` + token,
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Credentials" : true,
+                "Access-Control-Allow-Credentials": true,
             },
-            body: JSON.stringify({ token }),
+            body: JSON.stringify( { accessToken: token })
+
+            // body: `${JSON.stringify(oktaAuth.tokenManager.get("accessToken")
+            //     .then((accessToken) => {
+            //         console.log(accessToken)
+            //     }))}`
         });
 
         if (!response.ok) {

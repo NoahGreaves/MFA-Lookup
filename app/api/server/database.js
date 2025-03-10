@@ -22,6 +22,8 @@ class Database {
             console.error('Unexpected error on idle client', err);
             process.exit(-1);
         });
+        
+        //this.pool.on();
     }
 
     // Query method using async/await

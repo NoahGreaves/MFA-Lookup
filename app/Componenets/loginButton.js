@@ -1,8 +1,12 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { sendTokenToBackend } from "../api/utils/authService";
+import dotenv from "dotenv";
 
-let hasAuthenticated = false; 
+dotenv.config({ path: '../../../.env' });
+
+let hasAuthenticated = false;
+
 export const LoginButton = ({ styleClass }) => {
   const { isLoading, isAuthenticated, loginWithRedirect, getAccessTokenSilently } = useAuth0();
 
@@ -11,8 +15,15 @@ export const LoginButton = ({ styleClass }) => {
 
   if (isAuthenticated && !hasAuthenticated) {
     const setToken = async () => {
-      const token = await getAccessTokenSilently();
-      await sendTokenToBackend(token);
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: `https://dev-lj2fgkappxmqsrge.us.auth0.com/oauth2/default`,
+          redirect_uri: `http://localhost:3000`
+        },
+      });
+
+      console.log(accessToken)
+      await sendTokenToBackend(accessToken);
     }
 
     setToken();
@@ -21,5 +32,5 @@ export const LoginButton = ({ styleClass }) => {
   }
   else
     return <></>;
-  
+
 };

@@ -12,6 +12,7 @@
   "dependencies": {
     "@auth0/auth0-react": "^2.3.0",
     "@auth0/nextjs-auth0": "^3.6.0",
+    "@okta/jwt-verifier": "^4.0.1",
     "@okta/okta-react": "^6.9.0",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",

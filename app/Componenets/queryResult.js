@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import { SearchTypeDropDown } from "./Componenets/searchTypeDropDown.js";
 import { SearchTypeDropDown } from "./searchTypeDropDown.js";
 
 import { useAuth0 } from "@auth0/auth0-react";
@@ -16,7 +15,6 @@ export const QueryResult = () => {
 
     const [search, setSearch] = useState("");
     const [results, setResults] = useState([]);
-    // const [email, setEmail] = useState("");
 
     const handDropdownChange = (option) => {
         setDropdownOption(option);

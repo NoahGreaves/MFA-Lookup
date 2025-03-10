@@ -1,4 +1,3 @@
-//import useAuthToken from "../../hooks/useAuthToken.js";
 
 export const GetSearch = async (filters, token) => {
     try {

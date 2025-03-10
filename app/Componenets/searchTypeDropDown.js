@@ -19,9 +19,8 @@ export const SearchTypeDropDown = ({ callback }) => {
     return (
         <div>
             Search by:
-            {/* <select onChange={(e) => { handleChange(e) }}> */}
-            <select onChange={(e) => {
-                setSearchMethod(e.target.value);
+            <select onChange={(event) => {
+                setSearchMethod(event.target.value);
                 handleChange();
             }}>
                 {optionItems}

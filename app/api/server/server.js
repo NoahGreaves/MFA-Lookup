@@ -4,12 +4,21 @@ import { authMiddleware, errorHandler } from './authMiddleware.js';
 
 import oktaAuth from "../../oktaAuth.js";
 
+import OktaJwtVerifier from '@okta/jwt-verifier';
 
 import cors from "cors"; // Import cors
 import cookieParser from 'cookie-parser';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const API_URL = 'http://localhost:3000';
+
+const oktaJwtVerifier = new OktaJwtVerifier({
+    // issuer: `${process.env.OKTA_ISSUER}`,
+    issuer: 'https://dev-lj2fgkappxmqsrge.us.auth0.com/oauth2/default',
+    // clientId: `${process.env.OKTA_CLIENT_ID}`
+});
 
 app.use(
     cors({
@@ -25,20 +34,41 @@ app.use(cookieParser()); // Enables reading/writing cookies
 
 // Login Route - Sends Token in Secure HTTP-Only Cookie
 app.post("/login", (request, response) => {
-    const { token } = request.body;
-
+    console.log(request.body);
+    const { accessToken: token } = request.body;
+    // const token = request.body;
     if (!token) {
         return response.status(400).json({ error: "Token is required" });
     }
 
-    // store token in cookie
-    response.cookie("authToken", token, {
-        httpOnly: true,   // Prevents JavaScript access
-        secure: process.env.NODE_ENV === "production", // Use HTTPS in production
-        sameSite: "Strict", // Prevents CSRF attacks
-    });
+    // oktaJwtVerifier.verifyAccessToken(token, 'http://localhost:3000')
+    oktaJwtVerifier.verifyAccessToken(token, `https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/`)
+        .then(async jwt => {
+            console.log("JWT: " + jwt)
 
-    response.json({ message: "Authenticated successfully" });
+            // store token in cookie
+            response.cookie("authToken", token, {
+                httpOnly: true,   // Prevents JavaScript access
+                secure: process.env.NODE_ENV === "production", // Use HTTPS in production
+                sameSite: "Strict", // Prevents CSRF attacks
+            });
+
+            response.json({ message: "Authenticated successfully" });
+        })
+        .catch(err => {
+            console.warn('token failed validation: ' + err)
+            return response.status(401).json({ error: "Unauthorized" });
+        });
+
+
+    // // store token in cookie
+    // response.cookie("authToken", token, {
+    //     httpOnly: true,   // Prevents JavaScript access
+    //     secure: process.env.NODE_ENV === "production", // Use HTTPS in production
+    //     sameSite: "Strict", // Prevents CSRF attacks
+    // });
+
+    // response.json({ message: "Authenticated successfully" });
 });
 
 // Logout - Clears the Cookie
@@ -66,36 +96,47 @@ app.get("/time", async (request, response) => {
 app.get("/search", async (request, response) => {
     console.log("🔥 Received API request!");
     const token = request.cookies.authToken;
-    
-    if (!token) // check token validity
-        return response.status(401).json({ error: "Unauthorized" });
-    
-    try {
-        
-        const filters = request.query;
-        console.log("Received filters:", filters);
 
-        // Fix query
-        const query = "SELECT * FROM atb WHERE $1 ILIKE $2";
-        const values = [`%${filters.searchMethod}%`, `%${filters.search || ''}%`];
+    // //checkIsTokenValid(token);
+    // // oktaJwtVerifier.verifyAccessToken(token, 'api://default')
+    // //console.log(authMiddleware);
+    // oktaJwtVerifier.verifyAccessToken(token, 'api://default')
+    //     .then(async jwt => {
+    //         // console.log('token is valid')
+    //         console.log(jwt.claims)
+    //         // try{
+    //         //     const filters = request.query;
+    //         //     console.log("Received filters:", filters);
 
-        console.log("📝 Executing Query:", query);
-        console.log("🔢 Query Values:", values);
+    //         //     // Fix query
+    //         //     const query = "SELECT * FROM atb WHERE $1 ILIKE $2";
+    //         //     const values = [`%${filters.searchMethod || ''}%`, `%${filters.search || ''}%`];
 
-        const result = await db.query(query, values);
-        
-        if (!result) {
-            console.warn("⚠️ No result found!");
-            return response.status(404).json({ message: "No results found" });
-        }
-        
-        console.log("✅ Database Query Result:", result);
-        response.json({ server_result: result });
-        
-    } catch (err) {
-        console.error("Error fetching result:", err);
-        response.status(500).json({ error: "Internal server error" });
-    }
+    //         //     //console.log(filters.searchMethod);
+
+    //         //     console.log("📝 Executing Query:", query);
+    //         //     console.log("🔢 Query Values:", values);
+
+    //         //     const result = await db.query(query, values);
+
+    //         //     if (!result) {
+    //         //         console.warn("⚠️ No result found!");
+    //         //         return response.status(404).json({ message: "No results found" });
+    //         //     }
+
+    //         //     console.log("✅ Database Query Result:", result);
+    //         //     response.json({ server_result: result });
+
+    //         // } catch (err) {
+    //         //     console.error("Error fetching result:", err);
+    //         //     response.status(500).json({ error: "Internal server error" });
+    //         // }
+    //     })
+    //     .catch(err => {
+    //         console.warn('token failed validation: ' + err)
+    //         return response.status(401).json({ error: "Unauthorized" });
+
+    //     });
 });
 
 // Public route (No auth required)
@@ -108,9 +149,18 @@ app.use(errorHandler);
 
 // Gracefully close database connection on shutdown
 process.on('SIGINT', async () => {
+
+    // clear cookies
+
     await db.close();
     process.exit(0);
 });
 
 // Start server
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+
+// API Functionality
+const checkIsTokenValid = (token) => {
+
+}
