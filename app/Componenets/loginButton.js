@@ -2,6 +2,7 @@ import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { sendTokenToBackend } from "../api/utils/authService";
 import dotenv from "dotenv";
+import axios from "axios";
 
 dotenv.config({ path: '../../../.env' });
 
@@ -11,23 +12,26 @@ export const LoginButton = ({ styleClass }) => {
   const { isLoading, isAuthenticated, loginWithRedirect, getAccessTokenSilently } = useAuth0();
 
   if (isLoading) return <div>Loading Login Button</div>
-  if (!isAuthenticated) return <button className={styleClass} onClick={() => loginWithRedirect()}>Log In</button>;
+  if (!isAuthenticated) return <button className={styleClass} onClick={() => {loginWithRedirect()}} >Log In</button>;
+  if (isAuthenticated && hasAuthenticated) return <></>
+
 
   if (isAuthenticated && !hasAuthenticated) {
-    const setToken = async () => {
-      const accessToken = await getAccessTokenSilently({
-        authorizationParams: {
-          audience: `https://dev-lj2fgkappxmqsrge.us.auth0.com/oauth2/default`,
-          redirect_uri: `http://localhost:3000`
-        },
-      });
+    // const setToken = async () => {
+    //   //getTokenSilentley();
 
-      console.log(accessToken)
-      await sendTokenToBackend(accessToken);
-    }
 
-    setToken();
-    hasAuthenticated = true;
+    //   // Get Auth Code from /authorize
+    //   // const authRespone = getAuthCode();
+    //   // console.log("Auth Response " + authRespone);
+    //   // Pass Auth Code from getAuth to get token
+    //   // getToken();
+
+
+    // }
+
+    // setToken();
+    // hasAuthenticated = true;
     return <></>;
   }
   else

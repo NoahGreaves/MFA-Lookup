@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import useAuthToken from "../hooks/useAuthToken.js";
+import oktaAuth from "../oktaAuth.js";
 
 export const ProtectedData = () => {
     const token = useAuthToken();
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
     const { isAuthenticated } = useAuth0();
+
+    console.log(token)
 
     useEffect(() => {
 
@@ -16,14 +19,19 @@ export const ProtectedData = () => {
 
             try {
                 const response = await fetch("http://localhost:3000/time", {
+                    // method: "POST",
                     method: "GET",
                     credentials: "include", // Send cookies with the request
                     headers: {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json",
                         "Access-Control-Allow-Credentials": true,
+                        // "Set-Cookie": `authToken=${token}`
+                        // "Cookie": "authToken",
                     },
+                    //body: JSON.stringify({ accessToken: token }),
                 });
+
 
                 if (!response.ok) {
                     throw new Error("Unauthorized");
@@ -38,7 +46,8 @@ export const ProtectedData = () => {
         };
 
         fetchData();
-    }, [isAuthenticated, token]);
+    }, [isAuthenticated]);
+    // }, [isAuthenticated, token]);
 
 
     // Helper function to format dates
@@ -50,7 +59,7 @@ export const ProtectedData = () => {
         });
     };
 
-    if (!token) return <p>Please Authenticate...</p>;
+    // if (!token) return <p>Please Authenticate...</p>;
     if (error) return <p>Error: {error}</p>;
     if (!data) return;
 

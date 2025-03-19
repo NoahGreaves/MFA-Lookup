@@ -24,7 +24,8 @@ export default function HomePage() {
         domain="dev-lj2fgkappxmqsrge.us.auth0.com"
         clientId="JiaFtfAPdFW3rArItaQfWNFTxRo2LDxx"
         authorizationParams={{
-          redirect_uri: "http://localhost:3001",
+          // redirect_uri: "http://localhost:3001", // front end
+          redirect_uri: "http://localhost:3000/authorize", // back end
           //redirect_uri: window.location.origin,
           audience: "https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/",
           scope: "read:current_user"
@@ -33,7 +34,8 @@ export default function HomePage() {
         <div className="containerColumn">
           <Header title="ATB Multi-Factor Authentication (MFA) Account Search" />
           
-          <ProtectedData></ProtectedData>
+          {/* Time Display */}
+          {/* <ProtectedData></ProtectedData> */}
 
           <LoginButton styleClass="auth-button"></LoginButton>
           <LogoutButton styleClass="auth-button"></LogoutButton>
