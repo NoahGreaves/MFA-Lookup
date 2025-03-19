@@ -68,24 +68,33 @@ app.use(
 app.use(express.json());
 app.use(cookieParser()); // Enables reading/writing cookies`
 
-// Route that the AuthCode is sent to 
-// --> Redirect? to /token route to post Okta for Access, ID, and Refresh Tokens 
-app.get("/authorize", (req, res) => {
-    console.log("[Server] AUTHORIZE CALLED: " + req.url);
-    const authCode = req.query.code;
-    console.log("Auth Code: " + authCode);
-    res.redirect(307, url.format({
-        pathname: "/token",
-        query: req.query,
-    })); // redirect to /token route
+const clientId = 'JiaFtfAPdFW3rArItaQfWNFTxRo2LDxx';
+const redirectUri = 'http://localhost:3000/token';
+const oktaDomain = 'dev-lj2fgkappxmqsrge.us.auth0.com';
+
+app.get('/auth/initiate', (req, res) => {
+//   const codeVerifier = generateCodeVerifier();
+//   const codeChallenge = generateCodeChallenge(codeVerifier);
+
+  // Store codeVerifier in the backend (session, DB, or cache)
+//   req.session.codeVerifier = codeVerifier;
+
+  const authUrl = `https://${oktaDomain}/authorize?` +
+                  `client_id=${clientId}&` +
+                  `response_type=code&` +
+                  `scope=openid&` +
+                  `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+                  `state=random_state_string&` +
+                  `code_challenge_method=S256&` +
+                  `code_challenge=${codeChallenge}`;
+
+  res.json({ url: authUrl });
 });
-
-
 
 ///
 /// TODO: codeVerifier needs to be sent with the /authorize call to generate an code challenge
 ///
-app.get("/token", (req, res) => {
+app.get("/token", async (req, res) => {
     console.log("Token Route");
     const authCode = req.query.code;
     console.log(authCode);
@@ -102,7 +111,7 @@ app.get("/token", (req, res) => {
     });
 
     let config = {
-        method: 'post',
+        method: 'POST',
         maxBodyLength: Infinity,
         url: 'https://dev-lj2fgkappxmqsrge.us.auth0.com/oauth/token',
         headers: {
@@ -117,8 +126,14 @@ app.get("/token", (req, res) => {
             // return res.send(response.data);;
         })
         .catch((error) => {
-            console.log(error);
+            if (error.response) {
+                console.error('Error details:', error.response.status, error.response.data);
+              } else {
+                console.error('Error in request:', error.message);
+              }
         });
+
+        res.redirect('http://localhost:3001');
 });
 
 // Login Route - Sends Token in Secure HTTP-Only Cookie

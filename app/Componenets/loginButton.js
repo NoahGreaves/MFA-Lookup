@@ -11,8 +11,15 @@ let hasAuthenticated = false;
 export const LoginButton = ({ styleClass }) => {
   const { isLoading, isAuthenticated, loginWithRedirect, getAccessTokenSilently } = useAuth0();
 
+  async function login() {
+    const response = await fetch('http://localhost:3000/auth/initiate');
+    const data = await response.json();
+    window.location.href = data.url;
+  }
+
   if (isLoading) return <div>Loading Login Button</div>
-  if (!isAuthenticated) return <button className={styleClass} onClick={() => {loginWithRedirect()}} >Log In</button>;
+  // if (!isAuthenticated) return <button className={styleClass} onClick={() => {loginWithRedirect()}} >Log In</button>;
+  if (!isAuthenticated) return <button className={styleClass} onClick={() => login()}>Log In</button>;
   if (isAuthenticated && hasAuthenticated) return <></>
 
 

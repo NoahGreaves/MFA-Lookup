@@ -26,6 +26,7 @@ export default function HomePage() {
         authorizationParams={{
           // redirect_uri: "http://localhost:3001", // front end
           redirect_uri: "http://localhost:3000/authorize", // back end
+          redirect_uri: "http://localhost:3000/token", // back end
           //redirect_uri: window.location.origin,
           audience: "https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/",
           scope: "read:current_user"
