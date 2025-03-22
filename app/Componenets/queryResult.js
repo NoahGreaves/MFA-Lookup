@@ -35,15 +35,12 @@ export const QueryResult = () => {
 
         await GetSearch(filters, token)
         .then((result) => {
-            console.log("📦 Fetched Search:", result.server_result) // Debugging log
+            console.log("[Query Result] Fetched Search:", result.server_result) // Debugging log
             setResults(result.server_result) // Update state with API data
         });
     };
-    
-    if (!token) return <p>Please Authenticate...</p>;
-    if (error) return <p>Error: {error}</p>;
 
-    return isAuthenticated && (
+    return (
         <div style={{ padding: "10px" }}>
             <h2>Search Clients</h2>
             <SearchTypeDropDown callback={handDropdownChange}></SearchTypeDropDown>

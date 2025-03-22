@@ -9,7 +9,7 @@ export const GetSearch = async (filters, token) => {
         const queryParams = new URLSearchParams(filters).toString();
         const apiUrl = `http://localhost:3000/search?${queryParams}`;
 
-        console.log("🚀 Constructed API URL:", apiUrl); 
+        console.log("[Get Search] Constructed API URL:", apiUrl); 
 
         if (!apiUrl || apiUrl.includes("undefined") || apiUrl.includes("null")) {
             throw new Error("❌ Invalid API URL!");
@@ -19,7 +19,6 @@ export const GetSearch = async (filters, token) => {
             method: "GET",
             credentials: "include",
             headers: {
-                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Credentials": true,
             },
