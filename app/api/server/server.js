@@ -1,9 +1,8 @@
 import express from 'express';
 import db from './database.js';
-import { authMiddleware, errorHandler } from './authMiddleware.js';
+import { authenticateToken } from './authMiddleware.js';
 
 import axios from 'axios';
-import url from 'node:url';
 import qs from 'qs';
 import crypto from 'node:crypto';
 
@@ -13,24 +12,21 @@ import OktaJwtVerifier from '@okta/jwt-verifier';
 
 import cors from "cors"; // Import cors
 import cookieParser from 'cookie-parser';
+import jwt from 'jsonwebtoken';
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const API_URL = 'http://localhost:3000';
 
-const AUTH_TOKEN = "authToken";
+// ====== Tools & Operations ======
 
 const oktaJwtVerifier = new OktaJwtVerifier({
     issuer: 'https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/',
-    // issuer: 'https://dev-lj2fgkappxmqsrge.us.auth0.com/oauth2/default',
 });
 
-let codeVerifier;
-let codeChallenge;
-
 // Generate a random code verifier
-function generateCodeVerifier() {
+const generateCodeVerifier = () => {
   const array = crypto.randomBytes(32);
   return array.toString('base64')
     .replace(/=/g, '')
@@ -39,7 +35,7 @@ function generateCodeVerifier() {
 }
 
 // Generate a code challenge (SHA-256 hash of the code verifier)
-function generateCodeChallenge(codeVerifier) {
+const generateCodeChallenge = (codeVerifier) => {
   const hash = crypto.createHash('sha256').update(codeVerifier).digest();
   return hash.toString('base64')
     .replace(/=/g, '')
@@ -47,13 +43,16 @@ function generateCodeChallenge(codeVerifier) {
     .replace(/\//g, '_');
 }
 
-// Assign values to global variables
-codeVerifier = generateCodeVerifier();
-codeChallenge = generateCodeChallenge(codeVerifier);
+// Generate random state
+const generateState = () => {   // The spread operator (...) uses each bit as an argument to stringFromCharCode
+    return btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
+}
 
-console.log("Code Verifier:", codeVerifier);
-console.log("Code Challenge:", codeChallenge);
+const codeVerifier = generateCodeVerifier();
+const codeChallenge = generateCodeChallenge(codeVerifier);
+const state = generateState();
 
+// ====== SERVER ======
 
 app.use(
     cors({
@@ -73,38 +72,30 @@ const redirectUri = 'http://localhost:3000/token';
 const oktaDomain = 'dev-lj2fgkappxmqsrge.us.auth0.com';
 
 app.get('/auth/initiate', (req, res) => {
-//   const codeVerifier = generateCodeVerifier();
-//   const codeChallenge = generateCodeChallenge(codeVerifier);
-
-  // Store codeVerifier in the backend (session, DB, or cache)
-//   req.session.codeVerifier = codeVerifier;
-
   const authUrl = `https://${oktaDomain}/authorize?` +
                   `client_id=${clientId}&` +
                   `response_type=code&` +
                   `scope=openid&` +
                   `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-                  `state=random_state_string&` +
+                  `state=${state}&` +
                   `code_challenge_method=S256&` +
                   `code_challenge=${codeChallenge}`;
 
   res.json({ url: authUrl });
+    // res.redirect(authUrl);
 });
 
-///
-/// TODO: codeVerifier needs to be sent with the /authorize call to generate an code challenge
-///
 app.get("/token", async (req, res) => {
     console.log("Token Route");
     const authCode = req.query.code;
-    console.log(authCode);
-
+    console.log("AuthCode: " + authCode);
+    
     let data = qs.stringify({
         'grant_type': 'authorization_code',
         'code': `${authCode}`,
-        'client_id': 'JiaFtfAPdFW3rArItaQfWNFTxRo2LDxx',
+        'client_id': `${clientId}`,
         'client_secret': '',
-        'redirect_uri': 'http://localhost:3000/authorize',
+        'redirect_uri': `${redirectUri}`,
         'code_verifier': `${codeVerifier}`,
         'code_challenge_method': 'S256',
         'code_challenge': `${codeChallenge}`,
@@ -122,8 +113,16 @@ app.get("/token", async (req, res) => {
 
     axios.request(config)
         .then((response) => {
-            console.log(JSON.stringify(response.data));
-            // return res.send(response.data);;
+            console.log("Response Raw Token: " + response.data.access_token);
+            res.cookie('access_token', JSON.stringify(response.data.access_token), {
+                httpOnly: true,
+                secure: true, // true in production with HTTPS
+                sameSite: 'Strict',
+                maxAge: 60 * 60 * 1000, // 1 hour or whatever your expiry is
+            });
+            
+            
+            res.redirect('http://localhost:3001');
         })
         .catch((error) => {
             if (error.response) {
@@ -133,51 +132,37 @@ app.get("/token", async (req, res) => {
               }
         });
 
-        res.redirect('http://localhost:3001');
 });
 
-// Login Route - Sends Token in Secure HTTP-Only Cookie
-app.post("/login", (request, response) => {
-    console.log("[Server] LOGIN CALLED");
-    const { accessToken: token } = request.body;
-    // const { "Authorization": token } = request.header;
-
-    console.log("Login Token " + token);
-
+app.get('/auth/me', (req, res) => {
+    const token = req.cookies.access_token;
     if (!token) {
-        return response.status(400).json({ error: "Token is required" });
+        return res.status(401).json({ message: 'Not authenticated' });
     }
 
-    oktaJwtVerifier.verifyAccessToken(token, `https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/`)
-        .then(async jwt => {
-            console.log("JWT: " + jwt)
-
-            // store token in cookie
-            response.cookie(AUTH_TOKEN, token, {
-                httpOnly: true,   // Prevents JavaScript access
-                secure: process.env.NODE_ENV === "production", // Use HTTPS in production
-                //sameSite: "Strict", // Prevents CSRF attacks, only allows cookies from same-origin requests
-                //sameSite: "None; Secure", // accepts cookies from anywhere
-                maxAge: 36000,
-            });
-
-            return response.json({ message: "Authenticated successfully" });
-
-            //response.send();
-        })
-        .catch(err => {
-            // Logout user and redirect them to Login and request a new token
-
-            console.warn('token failed validation: ' + err)
-            return response.status(401).json({ error: "Unauthorized" });
-        });
+    try {
+        // NOT VERIFYING TOKEN
+        // console.log(token);
+        const decoded = jwt.decode(token); 
+        res.json({ user: decoded });
+    } catch (err) {
+        console.error('Error decoding token:', err);
+        res.status(401).json({ message: 'Invalid token' });
+    }
 });
 
 // Logout - Clears the Cookie
-app.get("/logout", (request, response) => {
-    //const token = request.cookies.authToken;
-    response.clearCookie(AUTH_TOKEN);
-    response.json({ message: "Logged out" });
+app.post('/auth/logout', (req, res) => {
+    console.log("Logout Called");
+    // console.log(req.cookies.access_token);
+    res.clearCookie('access_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        path: '/',
+    });
+    res.status(200).json({ message: 'Logged out successfully' });
+    res.send();
 });
 
 // Route for getting all the cookies
@@ -186,17 +171,23 @@ app.get('/getcookie', function (req, res) {
 })
 
 
-// app.post("/time", async (request, response) => {
-app.get("/time", async (request, response) => {
-    const token = request.cookies;
-    // const { accessToken: token } = request.body;
-    console.log("time Token " + token);
+// app.get("/time", async (request, response) => {
+app.get("/time", authenticateToken, async (request, response) => {
+    console.log("[Server] Time Called");
+    response.json({
+        message: 'This is protected data!',
+        user: req.user, // user info from validated JWT
+    });
 
+    // oktaJwtVerifier.verifyAccessToken(request.cookies.access_token, `https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/`)
+    // .then(() => {
+    // res.json({
+    //     message: 'This is protected data!',
+    //     user: req.user, // user info from validated JWT
+    // });
+    // }).catch((err) => {console.log(err)});
 
-    if (!token) {
-        return response.status(401).json({ error: "No Token" });
-    }
-
+    //res.send();
     // Verify Token
     // oktaJwtVerifier.verifyAccessToken(token, `https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/`)
     //     .then(async jwt => {
@@ -269,7 +260,7 @@ app.get("/", (request, response) => {
 });
 
 // Use error handler to return JSON
-app.use(errorHandler);
+// app.use(errorHandler);
 
 // Gracefully close database connection on shutdown
 process.on('SIGINT', async () => {

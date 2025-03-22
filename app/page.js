@@ -10,7 +10,7 @@ import { QueryResult } from "./Componenets/queryResult";
 
 import { LoginButton } from './Componenets/loginButton';
 import { LogoutButton } from "./Componenets/logoutButton";
-
+import { AuthProvider } from "./api/server/authContext";
 
 import { Auth0Provider } from '@auth0/auth0-react';
 
@@ -20,30 +20,33 @@ export default function HomePage() {
 
   return (
     <div>
-      <Auth0Provider
+      {/* <Auth0Provider
         domain="dev-lj2fgkappxmqsrge.us.auth0.com"
         clientId="JiaFtfAPdFW3rArItaQfWNFTxRo2LDxx"
         authorizationParams={{
           // redirect_uri: "http://localhost:3001", // front end
-          redirect_uri: "http://localhost:3000/authorize", // back end
+          // redirect_uri: "http://localhost:3000/authorize", // back end
           redirect_uri: "http://localhost:3000/token", // back end
           //redirect_uri: window.location.origin,
           audience: "https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/",
           scope: "read:current_user"
         }}
-      >
+      > */}
+      <AuthProvider>
         <div className="containerColumn">
           <Header title="ATB Multi-Factor Authentication (MFA) Account Search" />
           
-          {/* Time Display */}
-          {/* <ProtectedData></ProtectedData> */}
 
           <LoginButton styleClass="auth-button"></LoginButton>
           <LogoutButton styleClass="auth-button"></LogoutButton>
 
+          {/* Time Display */}
+          <ProtectedData></ProtectedData>
+          
           <QueryResult></QueryResult>
         </div>
-      </Auth0Provider>
+        </AuthProvider>
+      {/* </Auth0Provider> */}
     </div>
   );
 }
