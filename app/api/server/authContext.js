@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
         });
         setIsAuthenticated(false);
         setUser(null);
-        window.location.href = 'http://localhost:3001'; // Optional: redirect to home
+        window.location.href = 'http://localhost:3001';
     };
 
     return (

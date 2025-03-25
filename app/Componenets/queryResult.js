@@ -1,56 +1,56 @@
 import React, { useState, useEffect } from "react";
 import { SearchTypeDropDown } from "./searchTypeDropDown.js";
 
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 import useAuthToken from "../hooks/useAuthToken.js";
 import { GetSearch } from "../api/server/getSearch.js";
 
 export const QueryResult = () => {
     const token = useAuthToken();
-    const [data, setData] = useState(null);
-    const [error, setError] = useState(null);
-    const { isAuthenticated } = useAuth0();
-
-    const [dropdownOption, setDropdownOption] = useState("");
+    const [dropdownOption, setDropdownOption] = useState("Name");
 
     const [search, setSearch] = useState("");
     const [results, setResults] = useState([]);
 
     const handDropdownChange = (option) => {
-        setDropdownOption(option);
-        console.log("dropdown change: " + dropdownOption);
-    }
+        console.log("dropdown change: " + option); // Use the parameter directly
+        setDropdownOption(option); // Update the state
+    };
 
     const handleSearch = async () => {
+        if (!search || !dropdownOption) {
+            console.log("Please provide both a search method and a search term.");
+            return; // Stop if inputs are invalid
+        }
+
         const filters = {
-            searchMethod: '',
-            search: '',
+            searchMethod: dropdownOption,
+            search: String(search),
         };
 
-        if (search) filters.search = String(search);
-        filters.searchMethod = String(dropdownOption);
-        console.log("searchMethod: ", filters.searchMethod) // Debugging log
+        console.log("Filters before API call:", filters); // Debugging log
 
-        console.log("Filters before API call:", filters); // Debug filters
-
-        await GetSearch(filters, token)
-        .then((result) => {
-            console.log("[Query Result] Fetched Search:", result.server_result) // Debugging log
-            setResults(result.server_result) // Update state with API data
-        });
+        try {
+            const result = await GetSearch(filters, token);
+            console.log("[Query Result] Fetched Search:", result.server_result); // Debugging log
+            setResults(result.server_result); // Update results state
+        } catch (error) {
+            console.error("Error during API call:", error);
+        }
     };
 
     return (
         <div style={{ padding: "10px" }}>
             <h2>Search Clients</h2>
             <SearchTypeDropDown callback={handDropdownChange}></SearchTypeDropDown>
-           
-           <input
+
+            <input
                 type="text"
-                placeholder={`Search for ${dropdownOption}`}
+                placeholder={`Search for ${dropdownOption || "something"}`}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
             />
+
 
             <button onClick={handleSearch}>Search</button>
 

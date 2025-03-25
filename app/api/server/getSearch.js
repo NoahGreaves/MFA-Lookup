@@ -2,7 +2,7 @@
 export const GetSearch = async (filters, token) => {
     try {
         if (!filters || typeof filters !== "object") {
-            throw new Error("❌ Invalid filters provided");
+            throw new Error("Invalid filters provided");
         }
 
         // Convert filter object to query string (e.g., { name: "John" } -> "?name=John")
@@ -12,7 +12,7 @@ export const GetSearch = async (filters, token) => {
         console.log("[Get Search] Constructed API URL:", apiUrl); 
 
         if (!apiUrl || apiUrl.includes("undefined") || apiUrl.includes("null")) {
-            throw new Error("❌ Invalid API URL!");
+            throw new Error("Invalid API URL!");
         }
 
         const response = await fetch(apiUrl, {
@@ -28,11 +28,11 @@ export const GetSearch = async (filters, token) => {
             throw new Error(`API error: ${response.status}`);
 
         const data = await response.json();
-        console.log("❤️ Fetched Result: ", data);
+        console.log("Fetched Result: ", data);
     
         return data; // Ensure it's an array
     } catch (error) {
-        console.error("❌ Error fetching search results: ", error);
+        console.error("Error fetching search results: ", error);
         return [];
     }
 };

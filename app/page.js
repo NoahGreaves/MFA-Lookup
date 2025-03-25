@@ -20,18 +20,6 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* <Auth0Provider
-        domain="dev-lj2fgkappxmqsrge.us.auth0.com"
-        clientId="JiaFtfAPdFW3rArItaQfWNFTxRo2LDxx"
-        authorizationParams={{
-          // redirect_uri: "http://localhost:3001", // front end
-          // redirect_uri: "http://localhost:3000/authorize", // back end
-          redirect_uri: "http://localhost:3000/token", // back end
-          //redirect_uri: window.location.origin,
-          audience: "https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/",
-          scope: "read:current_user"
-        }}
-      > */}
       <AuthProvider>
         <div className="containerColumn">
           <Header title="ATB Multi-Factor Authentication (MFA) Account Search" />
@@ -46,7 +34,6 @@ export default function HomePage() {
           <QueryResult></QueryResult>
         </div>
         </AuthProvider>
-      {/* </Auth0Provider> */}
     </div>
   );
 }

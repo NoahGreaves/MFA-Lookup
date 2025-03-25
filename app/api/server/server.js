@@ -14,9 +14,12 @@ import cors from "cors"; // Import cors
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 
+import dotenv from "dotenv";
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const env = dotenv.config({ path: '../../../.env' });
 
 
 // ====== Tools & Operations ======
@@ -58,7 +61,6 @@ app.use(
     cors({
         origin: "http://localhost:3001", // Allow frontend
         methods: "GET, POST, PUT, DELETE",
-        // allowedHeaders: "Content-Type, Authorization, Access-Control-Allow-Credentials",
         allowedHeaders: "Content-Type, Authorization, Access-Control-Allow-Credentials, Origin, X-Requested-With, Accept",
         credentials: true, // Allow cookies
     })
@@ -68,14 +70,14 @@ app.use(express.json());
 app.use(cookieParser()); // Enables reading/writing cookies`
 
 // MOVE TO ENVIRONMENT VARIABLES
-const clientId = 'JiaFtfAPdFW3rArItaQfWNFTxRo2LDxx';
+const clientId = `${process.env.OKTA_CLIENT_ID}`;
+const oktaDomain = `${process.env.OKTA_DOMAIN}`;
+const clientSecret = `${process.env.OKTA_CLIENT_SECRET}`;
+const audience = `${process.env.OKTA_AUDIENCE}`;
 const redirectUri = 'http://localhost:3000/token';
-const oktaDomain = 'dev-lj2fgkappxmqsrge.us.auth0.com';
-const clientSecret = '';
-const audience = 'https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/';
 
 app.get('/auth/initiate', (req, res) => {
-    const authUrl = `https://${oktaDomain}/authorize?` +
+    const authUrl = `${oktaDomain}/authorize?` +
         `client_id=${clientId}&` +
         `response_type=code&` +
         `audience=${audience}&` +
@@ -92,7 +94,6 @@ app.get('/auth/initiate', (req, res) => {
 app.get("/token", async (req, res) => {
     console.log("Token Route");
     const authCode = req.query.code;
-    console.log("AuthCode: " + authCode);
 
     let data = qs.stringify({
         'grant_type': 'authorization_code',
@@ -118,7 +119,6 @@ app.get("/token", async (req, res) => {
 
     axios.request(config)
         .then((response) => {
-            console.log("Response Raw Token: " + response.data.access_token);
             res.cookie('access_token', response.data.access_token, {
                 httpOnly: true,
                 secure: true, // true in production with HTTPS
@@ -138,6 +138,7 @@ app.get("/token", async (req, res) => {
 
 });
 
+// app.get('/auth/me', authenticateToken, (req, res) => {
 app.get('/auth/me', (req, res) => {
     const token = req.cookies.access_token;
     if (!token) {
@@ -188,26 +189,42 @@ app.get("/time", authenticateToken, async (request, response) => {
 
 app.get("/search", authenticateToken, async (request, response) => {
     console.log("[Server] Received API request!");
+
     try {
         const filters = request.query;
         console.log("Received filters:", filters);
 
-        // Fix query
-        const query = "SELECT * FROM atb WHERE $1 ILIKE $2";
-        const values = [`%${filters.searchMethod || ''}%`, `%${filters.search || ''}%`];
+        // Validate column name (searchMethod)
+        const allowedColumns = ['name', 'mfa', 'email'];
+        const column = allowedColumns.includes(filters.searchMethod?.toLowerCase())
+            ? filters.searchMethod.toLowerCase()
+            : null;
 
-        console.log("📝 Executing Query:", query);
-        console.log("🔢 Query Values:", values);
+        if (!column) {
+            return response.status(400).json({ error: "Invalid search method" });
+        }
+
+        // Validate search term
+        if (!filters.search) {
+            return response.status(400).json({ error: "Search term is required" });
+        }
+
+        // Build query dynamically for column name
+        const query = `SELECT * FROM atb WHERE ${column} ILIKE $1`;
+        const values = [`%${filters.search}%`];
+
+        console.log("[Server] Final Query:", query);
+        console.log("[Server] Query Values:", values);
 
         const result = await db.query(query, values);
 
-        if (!result) {
-            console.warn("⚠️ No result found!");
+        if (!result.rows || result.rows.length === 0) {
+            console.warn("[Server] No results found!");
             return response.status(404).json({ message: "No results found" });
         }
 
-        console.log("✅ Database Query Result:", result);
-        response.json({ server_result: result });
+        console.log("[Server] Database Query Result:", result.rows);
+        response.json({ server_result: result.rows });
 
     } catch (err) {
         console.error("Error fetching result:", err);
