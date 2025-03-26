@@ -8,8 +8,6 @@ import { LoginButton } from './Componenets/loginButton';
 import { LogoutButton } from "./Componenets/logoutButton";
 import { AuthProvider } from "./api/server/authContext";
 
-import "./css/page.css";
-
 export default function HomePage() {
 
   const styles = {
@@ -75,7 +73,6 @@ export default function HomePage() {
         <h1 style={styles.h1}>Multi-Factor Authentication Look-up</h1>
         <ProtectedData style={styles.date}></ProtectedData>
         <LoginButton className={styles.button}></LoginButton>
-        {/* <LogoutButton className={styles.button}></LogoutButton> */}
 
         <QueryResult></QueryResult>
 

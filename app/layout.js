@@ -4,18 +4,9 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
-
-  // const pageStyle = {
-  //   backgroundColor: '#0072f0', // KEEP - OFFICIAL BLUE ATB COLOUR
-  //   color: 'white'
-  // }
-
   return (
-    // <html style={pageStyle} lang="en">
-    // </html>
     <html lang="en">
       <body>{children}</body>
     </html>
-
   )
 }
