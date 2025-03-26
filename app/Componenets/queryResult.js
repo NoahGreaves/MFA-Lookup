@@ -28,8 +28,6 @@ export const QueryResult = () => {
             search: String(search),
         };
 
-        console.log("Filters before API call:", filters); // Debugging log
-
         try {
             const result = await GetSearch(filters, token);
             console.log("[Query Result] Fetched Search:", result.server_result); // Debugging log
@@ -39,22 +37,75 @@ export const QueryResult = () => {
         }
     };
 
+    const styles = {
+        container: {
+            padding: '20px',
+            maxWidth: '600px',
+            margin: '0 auto',
+            backgroundColor: '#fff',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            borderRadius: '8px',
+        },
+        searchBar: {
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '20px',
+        },
+        input: {
+            flex: 1,
+            padding: '10px',
+            border: '1px solid #ddd',
+            borderRadius: '5px 0 0 5px',
+            fontSize: '1rem',
+        },
+        button: {
+            backgroundColor: '#0072f0',
+            color: '#fff',
+            border: 'none',
+            padding: '10px 15px',
+            borderRadius: '0 5px 5px 0',
+            fontSize: '1rem',
+            cursor: 'pointer',
+        },
+        buttonHover: {
+            backgroundColor: '#005bb5',
+        },
+        result: {
+            padding: '10px',
+            backgroundColor: '#f4f4f9',
+            border: '1px solid #ddd',
+            borderRadius: '5px',
+            fontSize: '1rem',
+            color: '#333',
+        },
+
+    }
+
     return (
-        <div style={{ padding: "10px" }}>
+        <div style={styles.container}>
             <h2>Search Clients</h2>
-            <SearchTypeDropDown callback={handDropdownChange}></SearchTypeDropDown>
 
-            <input
-                type="text"
-                placeholder={`Search for ${dropdownOption || "something"}`}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-            />
+            <div style={styles.searchBar}>
+                <SearchTypeDropDown callback={handDropdownChange}></SearchTypeDropDown>
+
+                <input
+                    style={styles.input}
+                    type="text"
+                    placeholder={`Search for ${dropdownOption || "something"}`}
+                    value={search}
+
+                    onChange={(e) => setSearch(e.target.value)}
+                />
 
 
-            <button onClick={handleSearch}>Search</button>
+                <button
+                    style={styles.button}
+                    onMouseOver={(e) => (e.target.style.backgroundColor = '#005bb5')}
+                    onMouseOut={(e) => (e.target.style.backgroundColor = '#0072f0')}
+                    onClick={handleSearch}>Search</button>
+            </div>
 
-            <div>
+            <div style={styles.result}>
                 {Array.isArray(results) && results.length > 0 ? (
                     results.map((result) => (
                         <div key={result.email}>
