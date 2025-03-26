@@ -192,7 +192,7 @@ app.get("/search", authenticateToken, async (request, response) => {
 
     try {
         const filters = request.query;
-        console.log("Received filters:", filters);
+        console.log("[Server] Received filters:", filters);
 
         // Validate column name (searchMethod)
         const allowedColumns = ['name', 'mfa', 'email'];
@@ -209,22 +209,16 @@ app.get("/search", authenticateToken, async (request, response) => {
             return response.status(400).json({ error: "Search term is required" });
         }
 
-        // Build query dynamically for column name
-        const query = `SELECT * FROM atb WHERE ${column} ILIKE $1`;
-        const values = [`%${filters.search}%`];
-
-        console.log("[Server] Final Query:", query);
-        console.log("[Server] Query Values:", values);
-
-        const result = await db.query(query, values);
-
-        if (!result.rows || result.rows.length === 0) {
+        const searchTerm = [`%${filters.search}%`];
+        const result = await db.query(`SELECT * FROM atb WHERE ${column} ILIKE $1`, searchTerm);
+        if (!result || result.length === 0) {
             console.warn("[Server] No results found!");
             return response.status(404).json({ message: "No results found" });
         }
 
-        console.log("[Server] Database Query Result:", result.rows);
-        response.json({ server_result: result.rows });
+        console.log("[Server] Database Query Result:", result);
+        response.json({ server_result: result });
+
 
     } catch (err) {
         console.error("Error fetching result:", err);

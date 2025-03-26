@@ -29,8 +29,12 @@ class Database {
     // Query method using async/await
     async query(text, params = []) {
         const client = await this.pool.connect();
+
         try {
+            console.log("[Database] Recieved Query: " + text);
             const { rows } = await client.query(text, params);
+            // const { rows } = await client.query("SELECT * FROM atb WHERE name ILIKE '%noah%';");
+            console.log("[Database] Rows: " + JSON.stringify(rows));
             return rows;
         } catch (err) {
             console.error('Query Error:', err.stack);
