@@ -33,8 +33,8 @@ export default function HomePage() {
     date: {
       textAlign: 'center', /* Ensures the date aligns horizontally in the center */
       marginFop: '5%', /* Adds some spacing if needed */
-  },
-  
+    },
+
     main: {
       textAlign: 'center',
       padding: '30px',

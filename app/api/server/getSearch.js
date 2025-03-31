@@ -1,10 +1,12 @@
+// import { json } from "body-parser";
 
+// TODO: Create Custom Status Codes and return to front-end to avoid ERRORS
 export const GetSearch = async (filters, token) => {
     try {
         if (!filters || typeof filters !== "object") {
             throw new Error("Invalid filters provided");
         }
-
+        
         // Convert filter object to query string (e.g., { name: "John" } -> "?name=John")
         const queryParams = new URLSearchParams(filters).toString();
         const apiUrl = `http://localhost:3000/search?${queryParams}`;
@@ -25,12 +27,12 @@ export const GetSearch = async (filters, token) => {
         })
 
         if (!response.ok)
-            throw new Error(`API error: ${response.status}`);
+            return { status: "Not Found", message: `No ${filters.searchMethod} Matches ${filters.search}`};
 
         const data = await response.json();
-        console.log("Fetched Result: ", data);
     
-        return data; // Ensure it's an array
+        // return data;
+        return { status: "Success", message: "Found Result", data: data };
     } catch (error) {
         console.error("Error fetching search results: ", error);
         return [];

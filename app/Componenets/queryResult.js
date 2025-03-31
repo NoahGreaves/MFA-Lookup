@@ -20,9 +20,9 @@ export const QueryResult = () => {
     const handleSearch = async () => {
         if (!search || !dropdownOption) {
             console.log("Please provide both a search method and a search term.");
-            return; // Stop if inputs are invalid
+            setResults("Please provide Search Term.");
+            return null;
         }
-
         const filters = {
             searchMethod: dropdownOption,
             search: String(search),
@@ -30,8 +30,16 @@ export const QueryResult = () => {
 
         try {
             const result = await GetSearch(filters, token);
-            console.log("[Query Result] Fetched Search:", result.server_result); // Debugging log
-            setResults(result.server_result); // Update results state
+
+            if (result.status === "Not Found") {
+                setResults(result.message)
+            }
+            if (result.status === "Error") {
+                setResults(result.message)
+            }
+            if (result.status === "Success") {
+                setResults(result.data.server_result); // Update results state
+            }
         } catch (error) {
             console.error("Error during API call:", error);
         }
@@ -97,7 +105,6 @@ export const QueryResult = () => {
                     onChange={(e) => setSearch(e.target.value)}
                 />
 
-
                 <button
                     style={styles.button}
                     onMouseOver={(e) => (e.target.style.backgroundColor = '#005bb5')}
@@ -107,13 +114,14 @@ export const QueryResult = () => {
 
             <div style={styles.result}>
                 {Array.isArray(results) && results.length > 0 ? (
-                    results.map((result) => (
-                        <div key={result.email}>
+                    results.map((result, index) => (
+                        // <div key={result.email}>
+                        <div key={index}>
                             {result.name} - {result.email} - {result.mfa}
                         </div>
                     ))
                 ) : (
-                    <p>No results found</p>
+                    <p>{results}</p>
                 )}
             </div>
         </div>
