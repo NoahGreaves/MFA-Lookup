@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { SearchTypeDropDown } from "./searchTypeDropDown.js";
 
-// import { useAuth0 } from "@auth0/auth0-react";
 import useAuthToken from "../hooks/useAuthToken.js";
 import { GetSearch } from "../api/server/getSearch.js";
+import { useAuth } from "../api/server/authContext.js";
 
 export const QueryResult = () => {
     const token = useAuthToken();
@@ -11,6 +11,9 @@ export const QueryResult = () => {
 
     const [search, setSearch] = useState("");
     const [results, setResults] = useState([]);
+
+    const { isAuthenticated } = useAuth();
+
 
     const handDropdownChange = (option) => {
         console.log("dropdown change: " + option); // Use the parameter directly
@@ -90,40 +93,43 @@ export const QueryResult = () => {
     }
 
     return (
-        <div style={styles.container}>
-            <h2>Search Clients</h2>
+        <div>
+            {isAuthenticated ? (
+                <div style={styles.container}>
+                    <h2>Search Clients</h2>
 
-            <div style={styles.searchBar}>
-                <SearchTypeDropDown callback={handDropdownChange}></SearchTypeDropDown>
+                    <div style={styles.searchBar}>
+                        <SearchTypeDropDown callback={handDropdownChange}></SearchTypeDropDown>
 
-                <input
-                    style={styles.input}
-                    type="text"
-                    placeholder={`Search for ${dropdownOption || "something"}`}
-                    value={search}
+                        <input
+                            style={styles.input}
+                            type="text"
+                            placeholder={`Search for ${dropdownOption || "something"}`}
+                            value={search}
 
-                    onChange={(e) => setSearch(e.target.value)}
-                />
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
 
-                <button
-                    style={styles.button}
-                    onMouseOver={(e) => (e.target.style.backgroundColor = '#005bb5')}
-                    onMouseOut={(e) => (e.target.style.backgroundColor = '#0072f0')}
-                    onClick={handleSearch}>Search</button>
-            </div>
+                        <button
+                            style={styles.button}
+                            onMouseOver={(e) => (e.target.style.backgroundColor = '#005bb5')}
+                            onMouseOut={(e) => (e.target.style.backgroundColor = '#0072f0')}
+                            onClick={handleSearch}>Search</button>
+                    </div>
 
-            <div style={styles.result}>
-                {Array.isArray(results) && results.length > 0 ? (
-                    results.map((result, index) => (
-                        // <div key={result.email}>
-                        <div key={index}>
-                            {result.name} - {result.email} - {result.mfa}
-                        </div>
-                    ))
-                ) : (
-                    <p>{results}</p>
-                )}
-            </div>
+                    <div style={styles.result}>
+                        {Array.isArray(results) && results.length > 0 ? (
+                            results.map((result, index) => (
+                                <div key={index}>
+                                    {result.name} - {result.email} - {result.mfa}
+                                </div>
+                            ))
+                        ) : (
+                            <p>{results}</p>
+                        )}
+                    </div>
+                </div>
+            ) : (null)}
         </div>
     );
 };

@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../api/server/authContext";
 
 export const ProtectedData = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
+
+    const { isAuthenticated } = useAuth();
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -16,14 +20,8 @@ export const ProtectedData = () => {
                     },
                 });
 
-
-                if (!response.ok) {
-                    throw new Error("Unauthorized");
-                }
-
                 const data = await response.json();
                 setData(data);
-                console.log("Protected data: ", data);
             } catch (err) {
                 setError("Error Fetching Data: " + err.message);
             }
@@ -46,7 +44,11 @@ export const ProtectedData = () => {
 
     return (
         <div>
-            <pre>{formatDate(data.server_time.now)}</pre>
+            {isAuthenticated ? (
+                <pre>{formatDate(data.server_time.now)}</pre>
+            ): (
+                <pre>Please Login</pre>
+            )}
         </div>
     );
 };

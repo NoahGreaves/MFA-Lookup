@@ -30,8 +30,7 @@ export const GetSearch = async (filters, token) => {
             return { status: "Not Found", message: `No ${filters.searchMethod} Matches ${filters.search}`};
 
         const data = await response.json();
-    
-        // return data;
+
         return { status: "Success", message: "Found Result", data: data };
     } catch (error) {
         console.error("Error fetching search results: ", error);
