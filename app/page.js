@@ -5,10 +5,26 @@ import { ProtectedData } from "./Componenets/protectedData";
 import { QueryResult } from "./Componenets/queryResult";
 
 import { LoginButton } from './Componenets/loginButton';
-import { LogoutButton } from "./Componenets/logoutButton";
 import { AuthProvider } from "./api/server/authContext";
 
+// import { Auth0Provider as OktaAuthProvider } from "@auth0/auth0-react";
+import { Security } from '@okta/okta-react';
+import { OktaAuth } from '@okta/okta-auth-js';
+
+import oktaAuth from "./oktaAuth";
+
+import dotenv from "dotenv";
+
+
 export default function HomePage() {
+  // const navigate = useNavigate(); // Access the history object for navigation
+
+  // Define the restoreOriginalUri callback
+  const restoreOriginalUri = async (_oktaAuth, originalUri) => {
+    window.location.href = originalUri || '/';
+
+    // navigate(originalUri || '/') // Redirect to the original URI or fallback to '/'
+  };
 
   const styles = {
     body: {
@@ -66,18 +82,20 @@ export default function HomePage() {
   };
 
   return (
-    <AuthProvider className={styles.body}>
-      <header style={styles.header}>ATB Multi-Factor Authentication (MFA) Account Search</header>
+    <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>
+        <AuthProvider oktaAuth={oktaAuth} className={styles.body}>
+          <header style={styles.header}>ATB Multi-Factor Authentication (MFA) Account Search</header>
 
-      <main style={styles.main}>
-        <h1 style={styles.h1}>Multi-Factor Authentication Look-up</h1>
-        <ProtectedData style={styles.date}></ProtectedData>
-        <LoginButton className={styles.button}></LoginButton>
+          <main style={styles.main}>
+            <h1 style={styles.h1}>Multi-Factor Authentication Look-up</h1>
+            <ProtectedData style={styles.date}></ProtectedData>
+            <LoginButton className={styles.button}></LoginButton>
 
-        <QueryResult></QueryResult>
+            <QueryResult></QueryResult>
 
-      </main>
-      <footer style={styles.footer}>© 2025 ATB. All rights reserved.</footer>
-    </AuthProvider>
+          </main>
+          <footer style={styles.footer}>© 2025 ATB. All rights reserved.</footer>
+        </AuthProvider>
+     </Security>
   );
 }

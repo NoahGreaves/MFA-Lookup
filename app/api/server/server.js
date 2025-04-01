@@ -6,9 +6,12 @@ import axios from 'axios';
 import qs from 'qs';
 import crypto from 'node:crypto';
 
-import oktaAuth from "../../oktaAuth.js";
+// import oktaAuth from "../../oktaAuth.js";
+//import { useOktaAuth } from '@okta/okta-react';
+
 
 import OktaJwtVerifier from '@okta/jwt-verifier';
+// import {oidc}
 
 import cors from "cors"; // Import cors
 import cookieParser from 'cookie-parser';
@@ -73,6 +76,7 @@ app.use(cookieParser()); // Enables reading/writing cookies`
 const clientId = `${process.env.OKTA_CLIENT_ID}`;
 const oktaDomain = `${process.env.OKTA_DOMAIN}`;
 const clientSecret = `${process.env.OKTA_CLIENT_SECRET}`;
+const oktaIssuer = `${process.env.OKTA_ISSUER}`
 const audience = `${process.env.OKTA_AUDIENCE}`;
 const redirectUri = 'http://localhost:3000/token';
 
@@ -123,7 +127,14 @@ app.get("/token", async (req, res) => {
                 httpOnly: true,
                 secure: true, // true in production with HTTPS
                 sameSite: 'Strict',
-                maxAge: 60 * 60 * 1000, // 1 hour or whatever your expiry is
+                maxAge: 60 * 60 * 1000, // 1 hour timer on expiration
+            });
+
+            res.cookie('id_token', response.data.id_token, {
+                httpOnly: true,
+                secure: true, // true in production with HTTPS
+                sameSite: 'Strict',
+                maxAge: 60 * 60 * 1000, // 1 hour timer on expiration
             });
 
             res.redirect('http://localhost:3001');
@@ -167,13 +178,17 @@ app.post('/auth/logout', (req, res) => {
         sameSite: 'strict',
         path: '/',
     });
-    res.status(200).json({ message: 'Logged out successfully' });
-});
 
-// Route for getting all the cookies
-app.get('/getcookie', function (req, res) {
-    res.send(req.cookies);
-})
+    res.clearCookie('id_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Strict'
+    });
+
+
+    // res.status(200).json({ message: 'Logged out successfully' });
+    res.status(200).redirect('http://localhost:3001');
+});
 
 app.get("/time", authenticateToken, async (request, response) => {
     console.log("[Server] Time Called");
@@ -230,6 +245,54 @@ app.get("/search", authenticateToken, async (request, response) => {
 app.get("/", (request, response) => {
     response.send("Welcome to the API!");
 });
+
+app.post('/auth/revoke', async (req, res) => {
+    try {
+        // Get the cookie from the client request
+        const accessToken = req.cookies.access_token; // Ensure your frontend sets this cookie
+        if (!accessToken) {
+            return res.status(401).json({ error: 'Access token missing' });
+        }
+
+        const idToken = req.cookies.id_token; // Retrieve the ID token from cookies
+
+        if (!idToken) {
+            console.error('ID token missing');
+            return res.status(401).json({ error: 'ID token missing' });
+        }
+
+        // Construct the Okta logout URL
+        const logoutUrl = `https://dev-lj2fgkappxmqsrge.us.auth0.com/v2/logout?` 
+        + `id_token_hint=${idToken}&`
+        + `post_logout_redirect_uri=http://localhost:3001`;
+
+        // Clear authentication cookies securely
+        res.clearCookie('access_token', { httpOnly: true, secure: true, sameSite: 'Strict' });
+        res.clearCookie('id_token', { httpOnly: true, secure: true, sameSite: 'Strict' });
+
+        //res.status(200).json({ message: 'Logged out successfully' });
+        res.status(200).json({ logoutUrl });
+
+    
+
+        // Redirect the user to Okta's logout URL
+        // res.redirect(logoutUrl);
+
+        // window.location.href = logoutUrl; // Redirect user to Okta's logout URL
+        // Redirect the user to Okta's logout URL
+        // res.redirect(logoutUrl);
+
+
+        // Clear cookies
+        // res.clearCookie('access_token', { httpOnly: true, secure: true, sameSite: 'Strict' });
+        // res.clearCookie('id_token', { httpOnly: true, secure: true, sameSite: 'Strict' });
+
+    } catch (error) {
+        console.error('Error during logout:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 // Gracefully close database connection on shutdown
 process.on('SIGINT', async () => {

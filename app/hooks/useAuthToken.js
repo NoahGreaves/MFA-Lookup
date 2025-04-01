@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { sendTokenToBackend } from "../api/utils/authService.js";
 import oktaAuth from "../oktaAuth";
 
 const useAuthToken = () => {
