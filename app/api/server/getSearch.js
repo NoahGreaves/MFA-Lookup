@@ -1,6 +1,3 @@
-// import { json } from "body-parser";
-
-// TODO: Create Custom Status Codes and return to front-end to avoid ERRORS
 export const GetSearch = async (filters, token) => {
     try {
         if (!filters || typeof filters !== "object") {

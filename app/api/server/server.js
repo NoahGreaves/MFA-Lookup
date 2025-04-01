@@ -6,14 +6,7 @@ import axios from 'axios';
 import qs from 'qs';
 import crypto from 'node:crypto';
 
-// import oktaAuth from "../../oktaAuth.js";
-//import { useOktaAuth } from '@okta/okta-react';
-
-
-import OktaJwtVerifier from '@okta/jwt-verifier';
-// import {oidc}
-
-import cors from "cors"; // Import cors
+import cors from "cors";
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 
@@ -26,10 +19,6 @@ const env = dotenv.config({ path: '../../../.env' });
 
 
 // ====== Tools & Operations ======
-
-const oktaJwtVerifier = new OktaJwtVerifier({
-    issuer: 'https://dev-lj2fgkappxmqsrge.us.auth0.com/api/v2/',
-});
 
 // Generate a random code verifier
 const generateCodeVerifier = () => {
@@ -92,7 +81,6 @@ app.get('/auth/initiate', (req, res) => {
         `code_challenge=${codeChallenge}`;
 
     res.json({ url: authUrl });
-    // res.redirect(authUrl);
 });
 
 app.get("/token", async (req, res) => {
@@ -149,7 +137,6 @@ app.get("/token", async (req, res) => {
 
 });
 
-// app.get('/auth/me', authenticateToken, (req, res) => {
 app.get('/auth/me', (req, res) => {
     const token = req.cookies.access_token;
     if (!token) {
@@ -158,7 +145,6 @@ app.get('/auth/me', (req, res) => {
 
     try {
         // NOT VERIFYING TOKEN
-        // console.log(token);
         const decoded = jwt.decode(token);
         res.json({ user: decoded });
     } catch (err) {
@@ -185,8 +171,6 @@ app.post('/auth/logout', (req, res) => {
         sameSite: 'Strict'
     });
 
-
-    // res.status(200).json({ message: 'Logged out successfully' });
     res.status(200).redirect('http://localhost:3001');
 });
 
@@ -270,23 +254,7 @@ app.post('/auth/revoke', async (req, res) => {
         res.clearCookie('access_token', { httpOnly: true, secure: true, sameSite: 'Strict' });
         res.clearCookie('id_token', { httpOnly: true, secure: true, sameSite: 'Strict' });
 
-        //res.status(200).json({ message: 'Logged out successfully' });
         res.status(200).json({ logoutUrl });
-
-    
-
-        // Redirect the user to Okta's logout URL
-        // res.redirect(logoutUrl);
-
-        // window.location.href = logoutUrl; // Redirect user to Okta's logout URL
-        // Redirect the user to Okta's logout URL
-        // res.redirect(logoutUrl);
-
-
-        // Clear cookies
-        // res.clearCookie('access_token', { httpOnly: true, secure: true, sameSite: 'Strict' });
-        // res.clearCookie('id_token', { httpOnly: true, secure: true, sameSite: 'Strict' });
-
     } catch (error) {
         console.error('Error during logout:', error);
         res.status(500).json({ error: 'Internal Server Error' });

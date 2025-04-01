@@ -78,7 +78,6 @@ export default function SearchBar({ style }) {
                 style={style}
                 rows={4}
                 cols={40}
-                // value={inputValue}
                 onChange={handleChange}
             />
             <div id='accountListContainer' style={listItemStyle}></div>

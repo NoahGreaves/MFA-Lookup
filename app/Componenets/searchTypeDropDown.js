@@ -40,7 +40,9 @@ export const SearchTypeDropDown = ({ callback }) => {
             padding: '10px',
             fontSize: '1rem',
             color: '#333',
-            border: '1px solid #ddd',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: '#ddd',
             borderRadius: '5px',
             backgroundColor: '#f4f4f9',
             cursor: 'pointer',
@@ -50,52 +52,18 @@ export const SearchTypeDropDown = ({ callback }) => {
         },
     };
 
-
-
     return (
         <div>
             <select
                 id="dropdown"
                 value={searchMethod}
                 onChange={handleChange}
-                // style={hover ? { ...styles.select, ...styles.selectHover } : styles.select}
-                style={ styles.select}
+                style={hover ? { ...styles.select, ...styles.selectHover } : styles.select}
                 onMouseOver={() => setHover(true)}
                 onMouseOut={() => setHover(false)}
             >
-
-                {/* <select value={searchMethod} onChange={handleChange}> */}
                 {optionItems}
             </select>
         </div>
     );
 };
-
-
-// export const SearchTypeDropDown = ({ callback }) => {
-//     const [searchMethod, setSearchMethod] = useState("Name");
-//     // const searchParameterTypes = ['Account_Number', 'Name', 'MFA_Method', 'Phone_Number', 'Email_Address'];
-//     const searchParameterTypes = ['Name', 'MFA', 'Email_Address'];
-
-//     const handleChange = () => {
-//         // setSearchType(event.target.value)
-//         callback(searchMethod);
-//         console.log(searchMethod);
-//     }
-
-//     const optionItems = searchParameterTypes.map((type) =>
-//         <option key={type}>{type.split('_').join(' ')}</option>
-//     );
-//     // onChange={(e) => setData(e.target.value)
-//     return (
-//         <div>
-//             Search by:
-//             <select onChange={(event) => {
-//                 setSearchMethod(event.target.value);
-//                 handleChange();
-//             }}>
-//                 {optionItems}
-//             </select>
-//         </div>
-//     )
-// }

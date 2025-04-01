@@ -21,9 +21,7 @@ export default function HomePage() {
 
   // Define the restoreOriginalUri callback
   const restoreOriginalUri = async (_oktaAuth, originalUri) => {
-    window.location.href = originalUri || '/';
-
-    // navigate(originalUri || '/') // Redirect to the original URI or fallback to '/'
+    window.location.href = originalUri || 'http://localhost:3001';
   };
 
   const styles = {

@@ -1,10 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useOktaAuth } from '@okta/okta-react';
 
-import dotenv from "dotenv";
-
 const AuthContext = createContext();
-const env = dotenv.config({ path: '../../../.env' });
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -63,54 +60,13 @@ export const AuthProvider = ({ children }) => {
                 const errorData = await response.json();
                 console.error("Logout failed:", errorData);
             }
-            
-    
-
-            // Log out of the app session (clearing local state)
-            // await fetch('http://localhost:3000/auth/logout', {
-            //     method: 'POST',
-            //     credentials: 'include',
-            // });
 
             // Clear local state
             setIsAuthenticated(false);
             setUser(null);
-
-            // Redirect to login page after successful logout
-            // window.location.href = 'http://localhost:3001';
         } catch (error) {
             console.error('Error during logout:', error);
         }
-
-
-
-        // console.log(useOktaAuth)
-        // await oktaAuth.signOut();
-
-        // try {
-        //     await fetch('http://localhost:3000/auth/revoke', {})
-        // } catch (err) {}
-
-        // try {
-
-        //     // Log out of App Session
-        //     await fetch('http://localhost:3000/auth/logout', {
-        //         method: 'POST',
-        //         credentials: 'include',
-        //     });
-
-        //     // Clear local application state
-        //     setIsAuthenticated(false);
-        //     setUser(null);
-
-        //     // window.location.href = `https://dev-lj2fgkappxmqsrge.us.auth0.com/oauth2/default/v2/logout`;
-        //     // window.location.href = `${process.env.OKTA_ISSUER}/logout`;
-        // } catch (error) {
-        //     console.log("Error during App Logout");
-        // }
-        // setIsAuthenticated(false);
-        // setUser(null);
-        //window.location.href = 'http://localhost:3001';
     };
 
     return (
