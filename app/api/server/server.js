@@ -12,6 +12,8 @@ import jwt from 'jsonwebtoken';
 
 import dotenv from "dotenv";
 
+import helmet from 'helmet';
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -60,6 +62,8 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser()); // Enables reading/writing cookies`
+// app.use(helmet.frameguard());
+// app.disable('x-powered-by');
 
 // MOVE TO ENVIRONMENT VARIABLES
 const clientId = `${process.env.OKTA_CLIENT_ID}`;

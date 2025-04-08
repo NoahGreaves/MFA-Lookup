@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../api/server/authContext";
 
-export const ProtectedData = () => {
+export const TimeDisplay = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
 

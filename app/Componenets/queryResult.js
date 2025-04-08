@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { SearchTypeDropDown } from "./searchTypeDropDown.js";
 
-import useAuthToken from "../hooks/useAuthToken.js";
 import { GetSearch } from "../api/server/getSearch.js";
 import { useAuth } from "../api/server/authContext.js";
 
 export const QueryResult = () => {
-    const token = useAuthToken();
     const [dropdownOption, setDropdownOption] = useState("Name");
 
     const [search, setSearch] = useState("");
@@ -32,7 +30,7 @@ export const QueryResult = () => {
         };
 
         try {
-            const result = await GetSearch(filters, token);
+            const result = await GetSearch(filters);
 
             if (result.status === "Not Found") {
                 setResults(result.message)
@@ -114,7 +112,9 @@ export const QueryResult = () => {
                             style={styles.button}
                             onMouseOver={(e) => (e.target.style.backgroundColor = '#005bb5')}
                             onMouseOut={(e) => (e.target.style.backgroundColor = '#0072f0')}
-                            onClick={handleSearch}>Search</button>
+                            onClick={handleSearch}>
+                            Search
+                        </button>
                     </div>
 
                     <div style={styles.result}>

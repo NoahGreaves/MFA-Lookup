@@ -1,24 +1,15 @@
 'use client'
 
-import { ProtectedData } from "./Componenets/protectedData";
+import { TimeDisplay } from "./Componenets/timeDisplay";
 
 import { QueryResult } from "./Componenets/queryResult";
 
 import { LoginButton } from './Componenets/loginButton';
 import { AuthProvider } from "./api/server/authContext";
-
-// import { Auth0Provider as OktaAuthProvider } from "@auth0/auth0-react";
 import { Security } from '@okta/okta-react';
-import { OktaAuth } from '@okta/okta-auth-js';
-
 import oktaAuth from "./oktaAuth";
 
-import dotenv from "dotenv";
-
-
 export default function HomePage() {
-  // const navigate = useNavigate(); // Access the history object for navigation
-
   // Define the restoreOriginalUri callback
   const restoreOriginalUri = async (_oktaAuth, originalUri) => {
     window.location.href = originalUri || 'http://localhost:3001';
@@ -86,11 +77,10 @@ export default function HomePage() {
 
           <main style={styles.main}>
             <h1 style={styles.h1}>Multi-Factor Authentication Look-up</h1>
-            <ProtectedData style={styles.date}></ProtectedData>
+            <TimeDisplay style={styles.date}></TimeDisplay>
             <LoginButton className={styles.button}></LoginButton>
 
             <QueryResult></QueryResult>
-
           </main>
           <footer style={styles.footer}>© 2025 ATB. All rights reserved.</footer>
         </AuthProvider>

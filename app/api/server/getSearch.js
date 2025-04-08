@@ -1,4 +1,4 @@
-export const GetSearch = async (filters, token) => {
+export const GetSearch = async (filters) => {
     try {
         if (!filters || typeof filters !== "object") {
             throw new Error("Invalid filters provided");
