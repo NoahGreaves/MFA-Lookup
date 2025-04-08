@@ -20,7 +20,6 @@ export const QueryResult = () => {
 
     const handleSearch = async () => {
         if (!search || !dropdownOption) {
-            console.log("Please provide both a search method and a search term.");
             setResults("Please provide Search Term.");
             return null;
         }
@@ -35,10 +34,10 @@ export const QueryResult = () => {
             if (result.status === "Not Found") {
                 setResults(result.message)
             }
-            if (result.status === "Error") {
+            else if (result.status === "Error") {
                 setResults(result.message)
             }
-            if (result.status === "Success") {
+            else if (result.status === "Success") {
                 setResults(result.data.server_result); // Update results state
             }
         } catch (error) {
@@ -86,6 +85,22 @@ export const QueryResult = () => {
             borderRadius: '5px',
             fontSize: '1rem',
             color: '#333',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+        },
+        resultItem: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '100%',
+            marginBottom: '1.5%',
+        },
+        name: {
+            fontWeight: 'bold',
+        },
+        result: {
+            marginLeft: '10px',
+            color: '#555',
         },
 
     }
@@ -119,11 +134,39 @@ export const QueryResult = () => {
 
                     <div style={styles.result}>
                         {Array.isArray(results) && results.length > 0 ? (
-                            results.map((result, index) => (
-                                <div key={index}>
-                                    {result.name} - {result.email} - {result.mfa}
-                                </div>
-                            ))
+                            results.map((result, index) => {
+                                if (dropdownOption === "Name") {
+                                    return (
+                                        <div style={styles.resultItem} key={index}>
+                                            <span style={styles.name}>{result.name}</span>
+                                            <span style={styles.result}>{result.email}</span>
+                                            <span style={styles.result}>{result.mfa}</span>
+                                        </div>
+                                    );
+                                } else if (dropdownOption === "Email") {
+                                    return (
+                                        <div style={styles.resultItem} key={index}>
+                                            <span style={styles.name}>{result.name}</span>
+                                            <span style={styles.result}>{result.email}</span>
+                                        </div>
+                                    );
+                                } else if (dropdownOption === "MFA") {
+                                    return (
+                                        <div style={styles.resultItem} key={index}>
+                                            <span style={styles.result}>{result.email}</span>
+                                            <span style={styles.result}>{result.mfa}</span>
+                                        </div>
+                                    );
+                                } else {
+                                    return (
+                                        <div style={styles.resultItem} key={index}>
+                                            <span style={styles.name}>{result.name}</span>
+                                            <span style={styles.result}>{result.email}</span>
+                                            <span style={styles.result}>{result.mfa}</span>
+                                        </div>
+                                    );
+                                }
+                            })
                         ) : (
                             <p>{results}</p>
                         )}
