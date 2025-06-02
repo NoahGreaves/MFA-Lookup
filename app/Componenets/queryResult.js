@@ -153,7 +153,7 @@ export const QueryResult = () => {
                                 } else if (dropdownOption === "MFA") {
                                     return (
                                         <div style={styles.resultItem} key={index}>
-                                            <span style={styles.result}>{result.email}</span>
+                                            <span style={styles.result}>{result.name}</span>
                                             <span style={styles.result}>{result.mfa}</span>
                                         </div>
                                     );
